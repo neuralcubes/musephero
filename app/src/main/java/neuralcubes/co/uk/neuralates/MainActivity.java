@@ -9,7 +9,11 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+import com.orbotix.DualStackDiscoveryAgent;
+import com.orbotix.common.Robot;
+import com.orbotix.common.RobotChangedStateListener;
+
+public class MainActivity extends AppCompatActivity implements RobotChangedStateListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        DualStackDiscoveryAgent.getInstance().addRobotStateListener( this );
     }
 
     @Override
@@ -48,5 +54,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void handleRobotChangedState(Robot robot, RobotChangedStateNotificationType robotChangedStateNotificationType) {
+
     }
 }
