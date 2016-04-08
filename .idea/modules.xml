@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/neuralates.iml" filepath="$PROJECT_DIR$/neuralates.iml" />
       <module fileurl="file://$PROJECT_DIR$/neuralates.iml" filepath="$PROJECT_DIR$/neuralates.iml" />
     </modules>
   </component>
