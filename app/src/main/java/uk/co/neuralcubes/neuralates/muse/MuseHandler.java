@@ -1,5 +1,7 @@
 package uk.co.neuralcubes.neuralates.muse;
 
+import android.support.annotation.NonNull;
+
 import com.google.common.eventbus.EventBus;
 import com.interaxon.libmuse.Accelerometer;
 import com.interaxon.libmuse.Battery;
@@ -35,6 +37,8 @@ import java.io.Closeable;
  *
  */
 public class MuseHandler implements Closeable {
+
+
     class AccelerometerReading {
 
         private double x,y,z;
@@ -91,17 +95,21 @@ public class MuseHandler implements Closeable {
     private MuseDataListener batteryListener;
     private MuseDataListener horseshoeListener;
 
+
+
+    private MuseDataListener accelerometerListener;
+
     /**
      * Connects to a paired muse identified by it index
      * and start sending event to the event bus
      * @param museIndex the index returned by Muse.getPairedMuses()
-     * @param bus
+     * @param bus the event bus
      * @return A MuseHandler
      */
-    public static MuseHandler connectTo(int museIndex, EventBus bus){
+    public static MuseHandler connectTo(int museIndex, @NonNull EventBus bus){
         return null;
     }
-    public MuseHandler(Muse muse, EventBus bus) {
+    public MuseHandler(Muse muse, @NonNull EventBus bus) {
         this.muse = muse;
         this.bus = bus;
     }
