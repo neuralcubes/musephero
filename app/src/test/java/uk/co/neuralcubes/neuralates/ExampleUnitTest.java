@@ -1,4 +1,4 @@
-package neuralcubes.co.uk.neuralates;
+package uk.co.neuralcubes.neuralates;
 
 import org.junit.Test;
 
