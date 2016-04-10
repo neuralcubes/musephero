@@ -121,21 +121,24 @@ public class MuseHandler implements Closeable {
     /**
      * Connects to a paired muse identified by it index
      * and start sending event to the event bus
-     * @param museIndex the index returned by Muse.getPairedMuses()
+     * @param muse the muse object to connect to
      * @param bus the event bus
      * @return A MuseHandler
      */
-    public static MuseHandler connectTo(int museIndex, @NonNull EventBus bus){
-        return null;
-    }
-    public MuseHandler(Muse muse, @NonNull EventBus bus) {
+
+    MuseHandler(Muse muse, @NonNull EventBus bus) {
         this.muse = muse;
         this.bus = bus;
+
     }
+
 
     void connect(){
         this.setConnectionListener();
         this.setBatteryListener();
+        this.setHorseshoeListener();
+        this.setAccelerometerListener();
+        this.setFocusListener();
         this.muse.runAsynchronously();
     }
     void setConnectionListener(){
