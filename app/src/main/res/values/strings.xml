@@ -2,5 +2,11 @@
     <string name="app_name">Neuralates</string>
     <string name="action_settings">Settings</string>
 
-    <string name="searching_for_spheros">Searching for Spheros</string>
+    <string name="discovery_searching">Searching for Spheros...</string>
+    <string name="discovery_connecting">Connecting to Sphero: %s</string>
+    <string name="discovery_connected">Connected to Sphero: %s</string>
+    <string name="discovery_online">Sphero online: %s</string>
+    <string name="discovery_offline">Sphero offline: %s</string>
+    <string name="discovery_disconnected">Disconnected from Sphero: %s</string>
+    <string name="discovery_connection_failed">Connection to Sphero failed: %s</string>
 </resources>

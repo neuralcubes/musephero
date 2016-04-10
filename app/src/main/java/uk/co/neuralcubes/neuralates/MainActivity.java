@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements RobotChangedState
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, R.string.searching_for_spheros, Snackbar.LENGTH_LONG).show();
+
             }
         });
 
@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements RobotChangedState
         if(!DualStackDiscoveryAgent.getInstance().isDiscovering()) {
             try {
                 DualStackDiscoveryAgent.getInstance().startDiscovery(this);
+                Snackbar.make(findViewById(android.R.id.content), R.string.discovery_searching, Snackbar.LENGTH_INDEFINITE).show();
             } catch (DiscoveryException e) {
                 Log.e("Sphero", "DiscoveryException: " + e.getMessage());
             }
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements RobotChangedState
 
     @Override
     public void handleRobotChangedState(Robot robot, RobotChangedStateNotificationType robotChangedStateNotificationType) {
+        int messageFormatID = -1;
         switch(robotChangedStateNotificationType) {
             case Online: {
                 //If robot uses Bluetooth LE, Developer Mode can be turned on.
@@ -127,11 +129,29 @@ public class MainActivity extends AppCompatActivity implements RobotChangedState
                 //Save the robot as a ConvenienceRobot for additional utility methods
                 mSphero = new ConvenienceRobot(robot);
 
+                messageFormatID = R.string.discovery_online;
+
                 //Start blinking the robot's LED
                 blink( false );
                 break;
             }
+            case Connecting:
+                messageFormatID = R.string.discovery_connecting;
+                break;
+            case Connected:
+                messageFormatID = R.string.discovery_connected;
+                break;
+            case Disconnected:
+                messageFormatID = R.string.discovery_disconnected;
+                break;
+            case Offline:
+                messageFormatID = R.string.discovery_offline;
+                break;
+            case FailedConnect:
+                messageFormatID = R.string.discovery_connection_failed;
+                break;
         }
+        Snackbar.make(findViewById(android.R.id.content), getString(messageFormatID, robot.getName()), Snackbar.LENGTH_INDEFINITE).show();
     }
 
     //Turn the robot LED on or off every two seconds
