@@ -39,6 +39,8 @@ import java.io.Closeable;
 public class MuseHandler implements Closeable {
 
 
+
+
     class AccelerometerReading {
 
         private double x,y,z;
@@ -84,6 +86,26 @@ public class MuseHandler implements Closeable {
             return values;
         }
     }
+    public class FocusReading {
+
+        double focus;
+
+        public FocusReading(double focus) {
+            this.focus = focus;
+        }
+
+        /**
+         * Frenada laaaaarga
+         * @return cuatro para fe, ojo arras!
+         */
+        public double getFocus() {
+            return focus;
+        }
+
+
+    }
+
+
     private final Muse muse;
     private final EventBus bus;
 
@@ -94,11 +116,8 @@ public class MuseHandler implements Closeable {
     private MuseConnectionListener connListener;
     private MuseDataListener batteryListener;
     private MuseDataListener horseshoeListener;
-
-
-
     private MuseDataListener accelerometerListener;
-
+    private MuseDataListener focusListener;
     /**
      * Connects to a paired muse identified by it index
      * and start sending event to the event bus
@@ -191,6 +210,23 @@ public class MuseHandler implements Closeable {
         };
         this.muse.registerDataListener(this.accelerometerListener,MuseDataPacketType.ACCELEROMETER);
     }
+    public void setFocusListener() {
+        this.focusListener = new MuseDataListener() {
+
+            @Override
+            public void receiveMuseDataPacket(MuseDataPacket museDataPacket) {
+                if (museDataPacket.getPacketType() == MuseDataPacketType.CONCENTRATION) {
+                    MuseHandler.this.bus.post(new FocusReading(museDataPacket.getValues().get(0)));
+                }
+            }
+            @Override
+            public void receiveMuseArtifactPacket(MuseArtifactPacket museArtifactPacket) {
+
+            }
+        };
+        this.muse.registerDataListener(this.focusListener,MuseDataPacketType.CONCENTRATION);
+    }
+
 
     /**
      * Resets all the focus related computed states
@@ -218,5 +254,10 @@ public class MuseHandler implements Closeable {
     MuseDataListener getAccelerometerListener() {
         return accelerometerListener;
     }
+
+    MuseDataListener getFocusListener() {
+        return this.focusListener;
+    }
+
 
 }

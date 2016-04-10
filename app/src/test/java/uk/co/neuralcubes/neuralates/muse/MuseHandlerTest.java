@@ -182,8 +182,34 @@ public class MuseHandlerTest {
         assertEquals("Roll is ok", holder.reading.getY(), 2., 0.);
         assertEquals("Yaw is ok", holder.reading.getZ(), 3., 0);
 
+    }
 
 
+    @Test
+    public void testSetFocusListener(){
+        class FocusHolder{
+            double focus;
+            @Subscribe public void set(MuseHandler.FocusReading reading){
+                this.focus = reading.getFocus();
+            }
+        }
+        FocusHolder holder = new FocusHolder();
+
+        this.eventBus.register(holder);
+        this.museHandler.setFocusListener();
+        MuseDataPacket packet = PowerMockito.mock(MuseDataPacket.class);
+
+        ArrayList<Double> values = new ArrayList<>(1);
+        //add values to match sizes so we're sure the value to add fits
+        values.add(1.5);
+
+
+        //mock calls
+        Mockito.when(packet.getPacketType()).thenReturn(MuseDataPacketType.CONCENTRATION);
+        Mockito.when(packet.getValues()).thenReturn(values);
+
+        this.museHandler.getFocusListener().receiveMuseDataPacket(packet);
+        assertEquals("The focus", holder.focus,1.5,0.);
 
     }
 }
