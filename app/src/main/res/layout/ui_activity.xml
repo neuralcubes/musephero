@@ -5,7 +5,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <fragment android:name="neurotechxldn.neuralates.ControlFragment"
+    <fragment android:name="uk.co.neuralcubes.neuralates.ControlFragment"
         android:id="@+id/control1"
         android:layout_weight="1"
         android:layout_width="0dp"
@@ -17,7 +17,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/darker_gray"/>
 
-    <fragment android:name="neurotechxldn.neuralates.ControlFragment"
+    <fragment android:name="uk.co.neuralcubes.neuralates.ControlFragment"
         android:id="@+id/control2"
         android:layout_weight="1"
         android:layout_width="0dp"

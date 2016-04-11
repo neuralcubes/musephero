@@ -2,6 +2,7 @@ package uk.co.neuralcubes.neuralates;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +14,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class ControlFragment extends Fragment {
     private Spinner selectSphero, selectMuse;
     private TextView batterySphero, batteryMuse;
-    private Button fp1, fp2, tp9, tp10;
+    private List<Button> electrodes;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,19 +54,18 @@ public class ControlFragment extends Fragment {
         Resources res = getResources();
         batteryMuse = (TextView) view.findViewById(R.id.battery_muse);
         batterySphero = (TextView) view.findViewById(R.id.battery_sphero);
-        fp1 = (Button) view.findViewById(R.id.fp1);
-        fp2 = (Button) view.findViewById(R.id.fp2);
-        tp9 = (Button) view.findViewById(R.id.tp9);
-        tp10 = (Button) view.findViewById(R.id.tp10);
+        electrodes = new ArrayList<Button>();
+        electrodes.add((Button) view.findViewById(R.id.fp1));
+        electrodes.add((Button) view.findViewById(R.id.fp2));
+        electrodes.add((Button) view.findViewById(R.id.tp9));
+        electrodes.add((Button) view.findViewById(R.id.tp10));
         // Assign default battery values: these will be updated when connected
         batteryMuse.setText(res.getString(R.string.battery_level, 100));
         batterySphero.setText(res.getString(R.string.battery_level, 100));
         // Assign default electrodes strength
-        fp1.setText(res.getString(R.string.electrode_strength, 100));
-        fp2.setText(res.getString(R.string.electrode_strength, 100));
-        tp9.setText(res.getString(R.string.electrode_strength, 100));
-        tp10.setText(res.getString(R.string.electrode_strength, 100));
-
+        for (Button b: electrodes) {
+            b.setText(res.getString(R.string.electrode_strength, 100));
+        }
         // Inflate the layout for this fragment
         return view;
     }
