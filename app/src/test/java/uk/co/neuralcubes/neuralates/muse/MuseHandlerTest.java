@@ -107,7 +107,6 @@ public class MuseHandlerTest {
         this.museHandler.getBatteryListener().receiveMuseDataPacket(packet);
         assertEquals("The battery is propagated",40.5,holder.level,0.0);
 
-
     }
 
     @Test
@@ -143,9 +142,6 @@ public class MuseHandlerTest {
         assertEquals("Normalised Horseshoe value for fp1", holder.reading.getValues()[1], 1/4., 0);
         assertEquals("Normalised Horseshoe value for fp2", holder.reading.getValues()[2], 2/4., 0);
         assertEquals("Normalised Horseshoe value for tp10", holder.reading.getValues()[3], 3/4., 0);
-
-
-
     }
 
     @Test
@@ -183,7 +179,6 @@ public class MuseHandlerTest {
         assertEquals("Yaw is ok", holder.reading.getZ(), 3., 0);
 
     }
-
 
     @Test
     public void testSetFocusListener(){

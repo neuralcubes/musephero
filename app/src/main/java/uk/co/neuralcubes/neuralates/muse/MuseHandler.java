@@ -23,27 +23,23 @@ import java.io.Closeable;
 /**
  * This class connects to a paired muse and emits a series of events to the event bus to inform
  * of the changed states
- *
+ * <p/>
  * This events are:
- *
- *  <ul>
- *     <li> com.interaxon.libmuse.ConnectionState </li>
- *     <li> com.interaxon.libmuse.Muse </li>
- *     <li> uk.co.neuralcubes.MuseHandler.AccelerometerReading </li>
- *     <li> uk.co.neuralcubes.MuseHandler.FocusLevel </li>
- *     <li> uk.co.neuralcubes.MuseHandler.HorseshoeReading </li>
- *  </ul>
- *
- *
+ * <p/>
+ * <ul>
+ * <li> com.interaxon.libmuse.ConnectionState </li>
+ * <li> com.interaxon.libmuse.Muse </li>
+ * <li> uk.co.neuralcubes.MuseHandler.AccelerometerReading </li>
+ * <li> uk.co.neuralcubes.MuseHandler.FocusLevel </li>
+ * <li> uk.co.neuralcubes.MuseHandler.HorseshoeReading </li>
+ * </ul>
  */
 public class MuseHandler implements Closeable {
 
 
-
-
     class AccelerometerReading {
 
-        private double x,y,z;
+        private double x, y, z;
 
         public AccelerometerReading(double x, double y, double z) {
             this.z = z;
@@ -51,30 +47,34 @@ public class MuseHandler implements Closeable {
             this.x = x;
         }
 
-
-        double getX(){
+        double getX() {
             return x;
         }
-        double getY(){
+
+        double getY() {
             return y;
         }
-        double getZ(){
+
+        double getZ() {
             return z;
         }
     }
 
-    class BatteryReading{
+    class BatteryReading {
         double value = 0;
 
         public BatteryReading(double value) {
             this.value = value;
         }
-        public double getLevel(){
+
+        public double getLevel() {
             return this.value;
         }
     }
-    class HorseshoeReading{
+
+    class HorseshoeReading {
         private double values[];
+
         public HorseshoeReading(double[] values) {
             this.values = values;
         }
@@ -82,10 +82,11 @@ public class MuseHandler implements Closeable {
         /*
          * Returns Tp9,fp1,fp2,tp10
          */
-        public double[]getValues(){
+        public double[] getValues() {
             return values;
         }
     }
+
     public class FocusReading {
 
         double focus;
@@ -96,6 +97,7 @@ public class MuseHandler implements Closeable {
 
         /**
          * Frenada laaaaarga
+         *
          * @return cuatro para fe, ojo arras!
          */
         public double getFocus() {
@@ -105,10 +107,8 @@ public class MuseHandler implements Closeable {
 
     }
 
-
     private final Muse muse;
     private final EventBus bus;
-
 
     /**
      * Private listeners
@@ -118,11 +118,13 @@ public class MuseHandler implements Closeable {
     private MuseDataListener horseshoeListener;
     private MuseDataListener accelerometerListener;
     private MuseDataListener focusListener;
+
     /**
      * Connects to a paired muse identified by it index
      * and start sending event to the event bus
+     *
      * @param muse the muse object to connect to
-     * @param bus the event bus
+     * @param bus  the event bus
      * @return A MuseHandler
      */
 
@@ -132,8 +134,7 @@ public class MuseHandler implements Closeable {
 
     }
 
-
-    void connect(){
+    void connect() {
         this.setConnectionListener();
         this.setBatteryListener();
         this.setHorseshoeListener();
@@ -141,8 +142,9 @@ public class MuseHandler implements Closeable {
         this.setFocusListener();
         this.muse.runAsynchronously();
     }
-    void setConnectionListener(){
-        this.connListener= new MuseConnectionListener() {
+
+    void setConnectionListener() {
+        this.connListener = new MuseConnectionListener() {
 
             @Override
             public void receiveMuseConnectionPacket(MuseConnectionPacket museConnectionPacket) {
@@ -151,8 +153,9 @@ public class MuseHandler implements Closeable {
         };
         this.muse.registerConnectionListener(this.connListener);
     }
-    void setBatteryListener(){
-       this.batteryListener = new MuseDataListener() {
+
+    void setBatteryListener() {
+        this.batteryListener = new MuseDataListener() {
             @Override
             public void receiveMuseDataPacket(MuseDataPacket museDataPacket) {
                 if (museDataPacket.getPacketType() == MuseDataPacketType.BATTERY) {
@@ -166,23 +169,24 @@ public class MuseHandler implements Closeable {
 
             }
         };
-        this.muse.registerDataListener(this.batteryListener,MuseDataPacketType.BATTERY);
+        this.muse.registerDataListener(this.batteryListener, MuseDataPacketType.BATTERY);
     }
 
-    void setHorseshoeListener(){
-        this.horseshoeListener =  new MuseDataListener() {
-            private double normalise(double val){
+    void setHorseshoeListener() {
+        this.horseshoeListener = new MuseDataListener() {
+            private double normalise(double val) {
                 //because 4 is the lowest quality, why not?!
-                return (4.-val)/4.;
+                return (4. - val) / 4.;
             }
+
             @Override
             public void receiveMuseDataPacket(MuseDataPacket museDataPacket) {
                 if (museDataPacket.getPacketType() == MuseDataPacketType.HORSESHOE) {
-                    double tp9= normalise(museDataPacket.getValues().get(Eeg.TP9.ordinal()));
-                    double fp1= normalise(museDataPacket.getValues().get(Eeg.FP1.ordinal()));
-                    double fp2= normalise(museDataPacket.getValues().get(Eeg.FP2.ordinal()));
-                    double tp10= normalise(museDataPacket.getValues().get(Eeg.TP10.ordinal()));
-                    MuseHandler.this.bus.post(new HorseshoeReading(new double[]{tp9,fp1,fp2,tp10}));
+                    double tp9 = normalise(museDataPacket.getValues().get(Eeg.TP9.ordinal()));
+                    double fp1 = normalise(museDataPacket.getValues().get(Eeg.FP1.ordinal()));
+                    double fp2 = normalise(museDataPacket.getValues().get(Eeg.FP2.ordinal()));
+                    double tp10 = normalise(museDataPacket.getValues().get(Eeg.TP10.ordinal()));
+                    MuseHandler.this.bus.post(new HorseshoeReading(new double[]{tp9, fp1, fp2, tp10}));
                 }
             }
 
@@ -191,10 +195,11 @@ public class MuseHandler implements Closeable {
 
             }
         };
-        this.muse.registerDataListener(this.horseshoeListener,MuseDataPacketType.HORSESHOE);
+        this.muse.registerDataListener(this.horseshoeListener, MuseDataPacketType.HORSESHOE);
     }
-    public void setAccelerometerListener() {
-        this.accelerometerListener =new MuseDataListener() {
+
+    void setAccelerometerListener() {
+        this.accelerometerListener = new MuseDataListener() {
 
             @Override
             public void receiveMuseDataPacket(MuseDataPacket museDataPacket) {
@@ -206,14 +211,16 @@ public class MuseHandler implements Closeable {
                     ));
                 }
             }
+
             @Override
             public void receiveMuseArtifactPacket(MuseArtifactPacket museArtifactPacket) {
 
             }
         };
-        this.muse.registerDataListener(this.accelerometerListener,MuseDataPacketType.ACCELEROMETER);
+        this.muse.registerDataListener(this.accelerometerListener, MuseDataPacketType.ACCELEROMETER);
     }
-    public void setFocusListener() {
+
+    void setFocusListener() {
         this.focusListener = new MuseDataListener() {
 
             @Override
@@ -222,38 +229,40 @@ public class MuseHandler implements Closeable {
                     MuseHandler.this.bus.post(new FocusReading(museDataPacket.getValues().get(0)));
                 }
             }
+
             @Override
             public void receiveMuseArtifactPacket(MuseArtifactPacket museArtifactPacket) {
 
             }
         };
-        this.muse.registerDataListener(this.focusListener,MuseDataPacketType.CONCENTRATION);
+        this.muse.registerDataListener(this.focusListener, MuseDataPacketType.CONCENTRATION);
     }
-
 
     /**
      * Resets all the focus related computed states
      * call this method when changing muse users
      */
-    public void resetFocusState(){
+    public void resetFocusState() {
 
     }
 
     @Override
-    public void close(){
+    public void close() {
 
     }
 
     MuseConnectionListener getMuseConnectionListener() {
         return connListener;
     }
-    
+
     MuseDataListener getBatteryListener() {
         return batteryListener;
     }
+
     MuseDataListener getHorseshoeListener() {
         return horseshoeListener;
     }
+
     MuseDataListener getAccelerometerListener() {
         return accelerometerListener;
     }
