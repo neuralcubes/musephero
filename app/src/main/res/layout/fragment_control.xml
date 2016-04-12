@@ -49,7 +49,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="@string/battery_level"
+                    android:text="@string/percentage_100"
                     android:id="@+id/battery_sphero"
                     android:textSize="@dimen/battery_text_size"
                     />
@@ -101,7 +101,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/battery_level"
+                    android:text="@string/percentage_100"
                     android:id="@+id/battery_muse"
                     android:textAlignment="center"
                     android:textSize="@dimen/battery_text_size"
@@ -115,41 +115,42 @@
                 android:rowCount="2"
                 android:columnCount="4"
                 android:layout_marginTop="@dimen/vertical_margin"
-                android:layout_marginStart="12dip">
+                android:layout_marginStart="12dip"
+                android:layout_marginLeft="12dip">
 
                 <Button
                     android:layout_width="@dimen/electrode_size"
                     android:layout_height="@dimen/electrode_size"
                     android:background="@drawable/electrode"
                     android:gravity="center_vertical|center_horizontal"
-                    android:text="@string/electrode_strength"
+                    android:text="@string/percentage_100"
                     android:layout_row="0"
                     android:layout_column="1"
                     android:id="@+id/fp1"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/electrode_text_size"
                     android:layout_marginEnd="@dimen/electrode_margin"
-                    />
+                    android:layout_marginRight="@dimen/electrode_margin" />
                 <Button
                     android:layout_width="@dimen/electrode_size"
                     android:layout_height="@dimen/electrode_size"
                     android:background="@drawable/electrode"
                     android:gravity="center_vertical|center_horizontal"
-                    android:text="@string/electrode_strength"
+                    android:text="@string/percentage_100"
                     android:layout_row="0"
                     android:layout_column="2"
                     android:id="@+id/fp2"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/electrode_text_size"
                     android:layout_marginStart="@dimen/electrode_margin"
-                    />
+                    android:layout_marginLeft="@dimen/electrode_margin" />
 
                 <Button
                     android:layout_width="@dimen/electrode_size"
                     android:layout_height="@dimen/electrode_size"
                     android:background="@drawable/electrode"
                     android:gravity="center_vertical|center_horizontal"
-                    android:text="@string/electrode_strength"
+                    android:text="@string/percentage_100"
                     android:layout_row="1"
                     android:layout_column="0"
                     android:id="@+id/tp9"
@@ -161,7 +162,7 @@
                     android:layout_height="@dimen/electrode_size"
                     android:background="@drawable/electrode"
                     android:gravity="center_vertical|center_horizontal"
-                    android:text="@string/electrode_strength"
+                    android:text="@string/percentage_100"
                     android:layout_row="1"
                     android:layout_column="3"
                     android:id="@+id/tp10"
