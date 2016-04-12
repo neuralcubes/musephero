@@ -13,6 +13,6 @@
     <string name="muse_selector_header">...:::Select Muse:::...</string>
     <string name="sphero_selector_header">...:::Select Sphero:::...</string>
     <string name="player">Player %1$d</string>
-    <string name="battery_level">%1$d %%</string>
-    <string name="electrode_strength">%1$d %%</string>
+    <string name="percentage_format">%1$d%</string>
+    <string name="percentage_100">100%</string>
 </resources>
