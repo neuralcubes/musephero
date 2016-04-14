@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.orbotix.ConvenienceRobot;
 import com.orbotix.DualStackDiscoveryAgent;
@@ -34,16 +35,11 @@ public class MainActivity extends AppCompatActivity implements RobotChangedState
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+        TextView tv = (TextView)findViewById(R.id.control1).findViewById(R.id.player_label);
+        tv.setText(getResources().getString(R.string.player, 1));
+        tv = (TextView)findViewById(R.id.control2).findViewById(R.id.player_label);
+        tv.setText(getResources().getString(R.string.player, 2));
 
         DualStackDiscoveryAgent.getInstance().addRobotStateListener(this);
         requestLocationPermission();
