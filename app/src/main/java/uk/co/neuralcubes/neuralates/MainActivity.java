@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         SpheroManager.getInstance().stopDiscovery();
         for (Robot m: SpheroManager.getInstance().getRobots()) {
-            m.sleep();
+            m.disconnect();
         }
     }
 
