@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.orbotix.common.Robot;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         SpheroManager.getInstance().stopDiscovery();
+        for (Robot m: SpheroManager.getInstance().getRobots()) {
+            m.sleep();
+        }
     }
 
     private void requestLocationPermission() {
