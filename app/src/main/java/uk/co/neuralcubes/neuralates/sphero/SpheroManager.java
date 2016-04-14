@@ -12,8 +12,8 @@ import com.orbotix.common.Robot;
 import com.orbotix.common.RobotChangedStateListener;
 import com.orbotix.le.RobotLE;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by monchote on 14/04/2016.
@@ -22,7 +22,7 @@ public class SpheroManager implements RobotChangedStateListener
 {
     private static final String TAG = "SpheroManager";
 
-    private List<Robot> mRobots = new ArrayList<>();
+    private Set<Robot> mRobots = new HashSet<>();
 
     private static SpheroManager sInstance;
 
@@ -39,7 +39,7 @@ public class SpheroManager implements RobotChangedStateListener
         return sInstance;
     }
 
-    public List<Robot> getRobots()
+    public Set<Robot> getRobots()
     {
         return mRobots;
     }
