@@ -78,6 +78,8 @@ public class SpheroManager implements RobotChangedStateListener
                     ((RobotLE)robot).setDeveloperMode(true);
                 }
 
+                Log.d(TAG, "Robot " + robot.getName() + " is now online. Address: " + robot.getAddress());
+
                 mRobots.add(robot);
 
                 //Start blinking the robot's LED
@@ -85,6 +87,7 @@ public class SpheroManager implements RobotChangedStateListener
                 break;
             }
             case Offline:
+                Log.d(TAG, "Robot " + robot.getName() + " went offline.");
                 mRobots.remove(robot);
                 break;
             case Connecting:
