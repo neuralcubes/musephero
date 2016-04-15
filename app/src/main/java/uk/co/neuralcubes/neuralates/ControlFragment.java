@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.EventBus;
@@ -33,7 +34,7 @@ public class ControlFragment extends Fragment {
     private TextView mBatterySphero, mBatteryMuse;
     private Collection<Button> mElectrodeButtons;
     private EventBus mBus = new EventBus();
-    private PairedMuse museHandler;
+    private Optional<PairedMuse> mMuseHandler = Optional.absent() ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,10 +105,10 @@ public class ControlFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                 //0 is the default "Choose muse" element in the spinner
-                if (i>0) {
+                if (i>0 ) {
                    //fix the offset
-                    ControlFragment.this.museHandler = PairedMuse.getPairedMuses().get(i-1);
-                    ControlFragment.this.museHandler.connect(ControlFragment.this.mBus);
+                    ControlFragment.this.mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i-1));
+                    ControlFragment.this.mMuseHandler.get().connect(ControlFragment.this.mBus);
                 }
             }
 
