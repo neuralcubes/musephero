@@ -28,7 +28,6 @@ import java.io.Closeable;
  * <p/>
  * <ul>
  * <li> com.interaxon.libmuse.ConnectionState </li>
- * <li> com.interaxon.libmuse.Muse </li>
  * <li> uk.co.neuralcubes.MuseHandler.AccelerometerReading </li>
  * <li> uk.co.neuralcubes.MuseHandler.FocusLevel </li>
  * <li> uk.co.neuralcubes.MuseHandler.HorseshoeReading </li>
