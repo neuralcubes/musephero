@@ -1,5 +1,6 @@
 package uk.co.neuralcubes.neuralates;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import uk.co.neuralcubes.neuralates.muse.MuseHandler;
 import uk.co.neuralcubes.neuralates.muse.PairedMuse;
 
 public class ControlFragment extends Fragment {
@@ -128,5 +130,23 @@ public class ControlFragment extends Fragment {
                 connectionStatusText.setText(state.toString());
             }
         });
+    }
+
+    @Subscribe
+    public void updateMuseBattery(final MuseHandler.BatteryReading reading){
+        this.getActivity().runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                TextView batteryText = (TextView)
+                        ControlFragment.this.getActivity().findViewById(R.id.battery_muse);
+                batteryText.setText(String.format("%.2f%%",reading.getLevel()));
+                //be careful when the reading is less that 0.25
+                if (reading.getLevel()<0.25){
+                    batteryText.setBackgroundColor(Color.RED);
+                }
+            }
+        });
+
     }
 }
