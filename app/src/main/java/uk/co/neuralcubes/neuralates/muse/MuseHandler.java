@@ -71,7 +71,7 @@ public class MuseHandler implements Closeable {
         }
     }
 
-    class HorseshoeReading {
+    public class HorseshoeReading {
         private double values[];
 
         public HorseshoeReading(double[] values) {

@@ -147,6 +147,35 @@ public class ControlFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Subscribe
+    public void updateMuseHorseshoe(final MuseHandler.HorseshoeReading reading){
+        this.getActivity().runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                TextView batteryText = (TextView)
+                        ControlFragment.this.getActivity().findViewById(R.id.battery_muse);
+
+                int i =0;
+
+                for (Button button : ControlFragment.this.mElectrodeButtons) {
+                    double quality = reading.getValues()[i]*100;
+                    button.setText(String.format("%.2f%%",quality));
+
+                    //Change colour to buttons,
+                    //Green is ok
+                    //Blue is everything else
+                    if (quality >= 75.) {
+                        button.setPressed(true);
+                    }else{
+                        button.setPressed(false);
+                    }
+                    i++;
+                }
+            }
+        });
 
     }
 }
