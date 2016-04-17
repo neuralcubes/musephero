@@ -15,4 +15,5 @@
     <string name="player">Player %1$d</string>
     <string name="percentage_format">%1$d%</string>
     <string name="percentage_100">100%</string>
+    <string name="muse_disconnected">Disconnected</string>
 </resources>

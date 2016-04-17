@@ -12,12 +12,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
+import com.interaxon.libmuse.ConnectionState;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import uk.co.neuralcubes.neuralates.muse.PairedMuse;
 
 public class ControlFragment extends Fragment {
 
@@ -26,12 +33,15 @@ public class ControlFragment extends Fragment {
     private Spinner mSelectSphero, mSelectMuse;
     private TextView mBatterySphero, mBatteryMuse;
     private Collection<Button> mElectrodeButtons;
+    private EventBus mBus = new EventBus();
+    private Optional<PairedMuse> mMuseHandler = Optional.absent() ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_control, container, false);
 
+        this.mBus.register(this);
         mSelectSphero = (Spinner) view.findViewById(R.id.sphero_selector);
         // TODO Get the list of devices got from listSpheros
         // Test array
@@ -43,14 +53,22 @@ public class ControlFragment extends Fragment {
         mSelectSphero.setAdapter(adapterSphero);
 
         mSelectMuse = (Spinner) view.findViewById(R.id.muse_selector);
-        // TODO Get the list of devices got from listMuses
-        // Test array
-        List<String> tmpArrayMuse = new ArrayList<>();
-        tmpArrayMuse.add(getResources().getString(R.string.muse_selector_header));
+
+        List<String> muses = Lists.newArrayList();
+        muses.add(getResources().getString(R.string.muse_selector_header));
         // Populate the spinner with the array
-        ArrayAdapter<String> adapterMuse = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, tmpArrayMuse);
+        muses.addAll(Collections2.transform(PairedMuse.getPairedMuses(), new Function<PairedMuse,String>() {
+            @Override
+            public String apply(PairedMuse muse) {
+                return muse.toString();
+            }
+        }));
+
+        ArrayAdapter<String> adapterMuse = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, muses);
+
         adapterMuse.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSelectMuse.setAdapter(adapterMuse);
+
         //System.out.println(view.getResources().getString(R.string.player)
         //        view.findViewById(R.id.player_label));
 
@@ -83,13 +101,31 @@ public class ControlFragment extends Fragment {
         });
 
         mSelectMuse.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String muse_id = adapterView.getItemAtPosition(i).toString();
-                //TODO Connect to selected Muse
+
+                //0 is the default "Choose muse" element in the spinner
+                if (i>0 ) {
+                   //fix the offset
+                    ControlFragment.this.mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i-1));
+                    ControlFragment.this.mMuseHandler.get().connect(ControlFragment.this.mBus);
+                }
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
                 // Another interface callback
+            }
+        });
+    }
+    @Subscribe
+    public void updateMuseConnectionState( final ConnectionState state){
+        this.getActivity().runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                TextView connectionStatusText = (TextView)
+                        ControlFragment.this.getActivity().findViewById(R.id.muse_connection_status);
+                connectionStatusText.setText(state.toString());
             }
         });
     }
