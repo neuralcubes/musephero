@@ -59,7 +59,7 @@ public class MuseHandler implements Closeable {
         }
     }
 
-    class BatteryReading {
+    public class BatteryReading {
         double value = 0;
 
         public BatteryReading(double value) {
@@ -71,7 +71,7 @@ public class MuseHandler implements Closeable {
         }
     }
 
-    class HorseshoeReading {
+    public class HorseshoeReading {
         private double values[];
 
         public HorseshoeReading(double[] values) {

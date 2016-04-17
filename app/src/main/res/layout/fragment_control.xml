@@ -51,7 +51,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/percentage_100"
+                        android:text="@string/ellipsis"
                         android:id="@+id/battery_sphero"
                         android:textSize="@dimen/battery_text_size" />
                 </LinearLayout>
@@ -120,7 +120,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/percentage_100"
+                        android:text="@string/ellipsis"
                         android:id="@+id/battery_muse"
                         android:textAlignment="center"
                         android:textSize="@dimen/battery_text_size"
