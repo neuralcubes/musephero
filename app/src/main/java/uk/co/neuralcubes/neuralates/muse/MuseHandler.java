@@ -36,7 +36,7 @@ import java.io.Closeable;
 public class MuseHandler implements Closeable {
 
 
-    class AccelerometerReading {
+    public class AccelerometerReading {
 
         private double x, y, z;
 
@@ -46,15 +46,15 @@ public class MuseHandler implements Closeable {
             this.x = x;
         }
 
-        double getX() {
+        public double getX() {
             return x;
         }
 
-        double getY() {
+        public  double getY() {
             return y;
         }
 
-        double getZ() {
+        public double getZ() {
             return z;
         }
     }

@@ -19,16 +19,20 @@ import com.google.common.collect.Lists;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.interaxon.libmuse.ConnectionState;
+import com.orbotix.ConvenienceRobot;
+import com.orbotix.common.Robot;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import uk.co.neuralcubes.neuralates.controller.RobotController;
 import uk.co.neuralcubes.neuralates.muse.MuseHandler;
 import uk.co.neuralcubes.neuralates.muse.PairedMuse;
+import uk.co.neuralcubes.neuralates.sphero.RobotSetListener;
+import uk.co.neuralcubes.neuralates.sphero.SpheroManager;
 
-public class ControlFragment extends Fragment {
+public class ControlFragment extends Fragment implements RobotSetListener {
 
     private static final Integer[] ELECTRODE_BUTTON_IDS = new Integer[]{R.id.fp1, R.id.fp2, R.id.tp9, R.id.tp10};
 
@@ -36,27 +40,23 @@ public class ControlFragment extends Fragment {
     private TextView mBatterySphero, mBatteryMuse;
     private Collection<Button> mElectrodeButtons;
     private EventBus mBus = new EventBus();
-<<<<<<< HEAD
     private Optional<PairedMuse> mMuseHandler = Optional.absent();
-=======
-    private Optional<PairedMuse> mMuseHandler = Optional.absent() ;
->>>>>>> Make mMuseHandler optional as it's initialised later
+    private Optional<ConvenienceRobot> mSphero = Optional.absent();
+    private Optional<RobotController> mController = Optional.absent();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_control, container, false);
-
         this.mBus.register(this);
+
+
+
+
         mSelectSphero = (Spinner) view.findViewById(R.id.sphero_selector);
-        // TODO Get the list of devices got from listSpheros
-        // Test array
-        List<String> tmpArraySphero = new ArrayList<>();
-        tmpArraySphero.add(getResources().getString(R.string.sphero_selector_header));
-        // Populate the spinner with the array
-        ArrayAdapter<String> adapterSphero = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, tmpArraySphero);
-        adapterSphero.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSelectSphero.setAdapter(adapterSphero);
+        SpheroManager.getInstance().addRobotSetListener(this);
+        this.updateRobots(SpheroManager.getInstance().getRobots());
+
 
         mSelectMuse = (Spinner) view.findViewById(R.id.muse_selector);
 
@@ -97,8 +97,10 @@ public class ControlFragment extends Fragment {
 
         mSelectSphero.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String sphero_id = adapterView.getItemAtPosition(i).toString();
-                //TODO Connect to selected Sphero
+                if (i > 0) {
+                    //fix the offset
+                    ControlFragment.this.mSphero = Optional.of(new ConvenienceRobot(SpheroManager.getInstance().getRobots().get(i-1)));
+                }
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
@@ -111,17 +113,10 @@ public class ControlFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                 //0 is the default "Choose muse" element in the spinner
-<<<<<<< HEAD
                 if (i > 0) {
                     //fix the offset
                     mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i - 1));
                     mMuseHandler.get().connect(mBus);
-=======
-                if (i>0 ) {
-                   //fix the offset
-                    ControlFragment.this.mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i-1));
-                    ControlFragment.this.mMuseHandler.get().connect(ControlFragment.this.mBus);
->>>>>>> Make mMuseHandler optional as it's initialised later
                 }
             }
 
@@ -189,5 +184,30 @@ public class ControlFragment extends Fragment {
             }
         });
 
+    }
+
+    @Override
+    public void updateRobots(final List<Robot> robots) {
+        this.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                List<String> tmpArraySphero = Lists.newArrayList();
+                tmpArraySphero.add(getResources().getString(R.string.sphero_selector_header));
+                tmpArraySphero.addAll(Collections2.transform(robots,
+                        new Function<Robot, String>(){
+                            @Override
+                            public String apply(Robot bender) {
+                                return bender.getName();
+                            }
+                        }
+
+                ));
+                // Populate the spinner with the array
+                ArrayAdapter<String> adapterSphero = new ArrayAdapter<>(getContext(),
+                        android.R.layout.simple_spinner_item, tmpArraySphero);
+                adapterSphero.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mSelectSphero.setAdapter(adapterSphero);
+            }
+        });
     }
 }
