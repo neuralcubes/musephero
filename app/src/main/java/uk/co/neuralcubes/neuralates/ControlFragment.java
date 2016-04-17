@@ -36,7 +36,11 @@ public class ControlFragment extends Fragment {
     private TextView mBatterySphero, mBatteryMuse;
     private Collection<Button> mElectrodeButtons;
     private EventBus mBus = new EventBus();
+<<<<<<< HEAD
     private Optional<PairedMuse> mMuseHandler = Optional.absent();
+=======
+    private Optional<PairedMuse> mMuseHandler = Optional.absent() ;
+>>>>>>> Make mMuseHandler optional as it's initialised later
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -107,10 +111,17 @@ public class ControlFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                 //0 is the default "Choose muse" element in the spinner
+<<<<<<< HEAD
                 if (i > 0) {
                     //fix the offset
                     mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i - 1));
                     mMuseHandler.get().connect(mBus);
+=======
+                if (i>0 ) {
+                   //fix the offset
+                    ControlFragment.this.mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i-1));
+                    ControlFragment.this.mMuseHandler.get().connect(ControlFragment.this.mBus);
+>>>>>>> Make mMuseHandler optional as it's initialised later
                 }
             }
 
