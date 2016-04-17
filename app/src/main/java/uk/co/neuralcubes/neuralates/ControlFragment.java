@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -42,6 +43,7 @@ public class ControlFragment extends Fragment implements RobotSetListener {
     private Optional<PairedMuse> mMuseHandler = Optional.absent();
     private Optional<ConvenienceRobot> mSphero = Optional.absent();
     private Optional<RobotController> mController = Optional.absent();
+    private ImageButton panicButton, forceButton, calibrateButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -74,6 +76,10 @@ public class ControlFragment extends Fragment implements RobotSetListener {
                 return (Button) view.findViewById(buttonId);
             }
         });
+
+        panicButton = (ImageButton) view.findViewById(R.id.calibrate_btn);
+        forceButton = (ImageButton) view.findViewById(R.id.force_muse_btn);
+        calibrateButton = (ImageButton) view.findViewById(R.id.muse_panic);
 
         return view;
     }
