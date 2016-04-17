@@ -30,13 +30,13 @@ import uk.co.neuralcubes.neuralates.muse.PairedMuse;
 
 public class ControlFragment extends Fragment {
 
-    private static final Integer[] ELECTRODE_BUTTON_IDS = new Integer[] {R.id.fp1, R.id.fp2, R.id.tp9, R.id.tp10};
+    private static final Integer[] ELECTRODE_BUTTON_IDS = new Integer[]{R.id.fp1, R.id.fp2, R.id.tp9, R.id.tp10};
 
     private Spinner mSelectSphero, mSelectMuse;
     private TextView mBatterySphero, mBatteryMuse;
     private Collection<Button> mElectrodeButtons;
     private EventBus mBus = new EventBus();
-    private Optional<PairedMuse> mMuseHandler = Optional.absent() ;
+    private Optional<PairedMuse> mMuseHandler = Optional.absent();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,7 +59,7 @@ public class ControlFragment extends Fragment {
         List<String> muses = Lists.newArrayList();
         muses.add(getResources().getString(R.string.muse_selector_header));
         // Populate the spinner with the array
-        muses.addAll(Collections2.transform(PairedMuse.getPairedMuses(), new Function<PairedMuse,String>() {
+        muses.addAll(Collections2.transform(PairedMuse.getPairedMuses(), new Function<PairedMuse, String>() {
             @Override
             public String apply(PairedMuse muse) {
                 return muse.toString();
@@ -107,10 +107,10 @@ public class ControlFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                 //0 is the default "Choose muse" element in the spinner
-                if (i>0 ) {
-                   //fix the offset
-                     mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i-1));
-                     mMuseHandler.get().connect( mBus);
+                if (i > 0) {
+                    //fix the offset
+                    mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i - 1));
+                    mMuseHandler.get().connect(mBus);
                 }
             }
 
@@ -119,30 +119,31 @@ public class ControlFragment extends Fragment {
             }
         });
     }
+
     @Subscribe
-    public void updateMuseConnectionState( final ConnectionState state){
+    public void updateMuseConnectionState(final ConnectionState state) {
         this.getActivity().runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
                 TextView connectionStatusText = (TextView)
-                         getView().findViewById(R.id.muse_connection_status);
+                        getView().findViewById(R.id.muse_connection_status);
                 connectionStatusText.setText(state.toString());
             }
         });
     }
 
     @Subscribe
-    public void updateMuseBattery(final MuseHandler.BatteryReading reading){
+    public void updateMuseBattery(final MuseHandler.BatteryReading reading) {
         this.getActivity().runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
                 TextView batteryText = (TextView)
-                         getView().findViewById(R.id.battery_muse);
-                batteryText.setText(String.format("%.2f%%",reading.getLevel()));
+                        getView().findViewById(R.id.battery_muse);
+                batteryText.setText(String.format("%.2f%%", reading.getLevel()));
                 //be careful when the reading is less that 0.25
-                if (reading.getLevel()<0.25){
+                if (reading.getLevel() < 0.25) {
                     batteryText.setBackgroundColor(Color.RED);
                 }
             }
@@ -150,26 +151,26 @@ public class ControlFragment extends Fragment {
     }
 
     @Subscribe
-    public void updateMuseHorseshoe(final MuseHandler.HorseshoeReading reading){
+    public void updateMuseHorseshoe(final MuseHandler.HorseshoeReading reading) {
         this.getActivity().runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
                 TextView batteryText = (TextView)
-                         getView().findViewById(R.id.battery_muse);
+                        getView().findViewById(R.id.battery_muse);
 
-                int i =0;
+                int i = 0;
 
-                for (Button button :  mElectrodeButtons) {
-                    double quality = reading.getValues()[i]*100;
-                    button.setText(String.format("%.2f%%",quality));
+                for (Button button : mElectrodeButtons) {
+                    double quality = reading.getValues()[i] * 100;
+                    button.setText(String.format("%.2f%%", quality));
 
                     //Change colour to buttons,
                     //Green is ok
                     //Blue is everything else
                     if (quality >= 75.) {
                         button.setPressed(true);
-                    }else{
+                    } else {
                         button.setPressed(false);
                     }
                     i++;
