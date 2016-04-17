@@ -109,8 +109,8 @@ public class ControlFragment extends Fragment {
                 //0 is the default "Choose muse" element in the spinner
                 if (i>0 ) {
                    //fix the offset
-                    ControlFragment.this.mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i-1));
-                    ControlFragment.this.mMuseHandler.get().connect(ControlFragment.this.mBus);
+                     mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i-1));
+                     mMuseHandler.get().connect( mBus);
                 }
             }
 
@@ -126,7 +126,7 @@ public class ControlFragment extends Fragment {
             @Override
             public void run() {
                 TextView connectionStatusText = (TextView)
-                        ControlFragment.this.getActivity().findViewById(R.id.muse_connection_status);
+                         getView().findViewById(R.id.muse_connection_status);
                 connectionStatusText.setText(state.toString());
             }
         });
@@ -139,7 +139,7 @@ public class ControlFragment extends Fragment {
             @Override
             public void run() {
                 TextView batteryText = (TextView)
-                        ControlFragment.this.getActivity().findViewById(R.id.battery_muse);
+                         getView().findViewById(R.id.battery_muse);
                 batteryText.setText(String.format("%.2f%%",reading.getLevel()));
                 //be careful when the reading is less that 0.25
                 if (reading.getLevel()<0.25){
@@ -156,11 +156,11 @@ public class ControlFragment extends Fragment {
             @Override
             public void run() {
                 TextView batteryText = (TextView)
-                        ControlFragment.this.getActivity().findViewById(R.id.battery_muse);
+                         getView().findViewById(R.id.battery_muse);
 
                 int i =0;
 
-                for (Button button : ControlFragment.this.mElectrodeButtons) {
+                for (Button button :  mElectrodeButtons) {
                     double quality = reading.getValues()[i]*100;
                     button.setText(String.format("%.2f%%",quality));
 
