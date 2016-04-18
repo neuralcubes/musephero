@@ -78,10 +78,37 @@ public class ControlFragment extends Fragment implements RobotSetListener {
         });
 
         panicButton = (ImageButton) view.findViewById(R.id.calibrate_btn);
+        panicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mSphero.isPresent()) {
+                    mSphero.get().stop();
+                }
+            }
+        });
         forceButton = (ImageButton) view.findViewById(R.id.force_muse_btn);
         calibrateButton = (ImageButton) view.findViewById(R.id.muse_panic);
         noFocusButton = (ImageButton) view.findViewById(R.id.noFocus);
+        noFocusButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if (mController.isPresent()) {
+                    mController.get().toggleOverrideFocus();
+                }
+            }
+        });
         horizonButton = (ImageButton) view.findViewById(R.id.resetHorizon);
+        horizonButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                v.setSelected(!v.isSelected());
+                if (v.isSelected()) {
+                    if (mController.isPresent()) {
+                        mController.get().setBaseReading();
+                    }
+                }
+            }
+        });
 
         return view;
     }
@@ -95,11 +122,13 @@ public class ControlFragment extends Fragment implements RobotSetListener {
                 if (i > 0) {
                     //fix the offset
                     ControlFragment.this.mSphero = Optional.of(new ConvenienceRobot(SpheroManager.getInstance().getRobots().get(i-1)));
+                    enableSpheroActions();
                 }
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
                 // Another interface callback
+                disableSpheroActions();
             }
         });
 
@@ -111,11 +140,13 @@ public class ControlFragment extends Fragment implements RobotSetListener {
                     //fix the offset
                     mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i - 1));
                     mMuseHandler.get().connect(mBus);
+                    enableMusActions();
                 }
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
                 // Another interface callback
+                disableMuseActions();
             }
         });
     }
@@ -206,7 +237,7 @@ public class ControlFragment extends Fragment implements RobotSetListener {
         horizonButton.setEnabled(true);
     }
 
-    private void disableSpheriActions(){
+    private void disableSpheroActions(){
         calibrateButton.setEnabled(false);
         noFocusButton.setEnabled(false);
         horizonButton.setEnabled(false);
@@ -219,5 +250,9 @@ public class ControlFragment extends Fragment implements RobotSetListener {
     private void disableMuseActions(){
         panicButton.setEnabled(false);
         forceButton.setEnabled(false);
+        //extra actions
+        if (mController.isPresent()) {
+            mController.get().setOverrideFocus(false);
+        }
     }
 }
