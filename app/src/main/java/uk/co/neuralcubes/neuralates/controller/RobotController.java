@@ -17,7 +17,8 @@ public class RobotController {
     boolean mRunning;
     //valid values from 0 to 1
     private float mThrust=0.1f;
-
+    private boolean mOverrideFocus = false;
+    private MuseHandler.AccelerometerReading baseReading;
 
     public RobotController(@NonNull ConvenienceRobot mRobot,@NonNull EventBus mBus) {
         this.mRobot = mRobot;
@@ -31,7 +32,6 @@ public class RobotController {
 
     @Subscribe
     public synchronized void updateAcelerometer(MuseHandler.AccelerometerReading reading){
-
         mRobot.drive(computeAngle(reading.getX(),reading.getY()),this.mThrust);
     }
 
@@ -51,4 +51,15 @@ public class RobotController {
         return (float)( (theta * 180 / Math.PI) % 360);
     }
 
+    public void setOverrideFocus(boolean overrideFocus) {
+        mOverrideFocus = overrideFocus;
+    }
+
+    public void toggleOverrideFocus() {
+        mOverrideFocus = !mOverrideFocus;
+    }
+
+    public synchronized void setBaseReading() {
+        //TODO jmanart assign the latest read.
+    }
 }
