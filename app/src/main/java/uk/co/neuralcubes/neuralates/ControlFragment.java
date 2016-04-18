@@ -199,4 +199,25 @@ public class ControlFragment extends Fragment implements RobotSetListener {
             }
         });
     }
+
+    private void enableSpheroActions(){
+        calibrateButton.setEnabled(true);
+        noFocusButton.setEnabled(true);
+        horizonButton.setEnabled(true);
+    }
+
+    private void disableSpheriActions(){
+        calibrateButton.setEnabled(false);
+        noFocusButton.setEnabled(false);
+        horizonButton.setEnabled(false);
+    }
+
+    private void enableMusActions(){
+        panicButton.setEnabled(true);
+        forceButton.setEnabled(true);
+    }
+    private void disableMuseActions(){
+        panicButton.setEnabled(false);
+        forceButton.setEnabled(false);
+    }
 }
