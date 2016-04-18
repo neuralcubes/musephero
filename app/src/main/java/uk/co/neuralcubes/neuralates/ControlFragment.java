@@ -103,6 +103,9 @@ public class ControlFragment extends Fragment implements RobotSetListener {
                     //fix the offset
                     mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i - 1));
                     mMuseHandler.get().connect(mBus);
+                    if (mSphero.isPresent()) {
+                        mController = Optional.of(new RobotController(mSphero.get(), mBus));
+                    }
                 }
             }
 

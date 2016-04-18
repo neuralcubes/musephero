@@ -1,6 +1,7 @@
 package uk.co.neuralcubes.neuralates.muse;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.common.eventbus.EventBus;
 import com.interaxon.libmuse.Accelerometer;
@@ -108,6 +109,7 @@ public class MuseHandler implements Closeable {
 
     private final Muse muse;
     private final EventBus bus;
+    private final ConcetrationManager mConcentrationManager;
 
     /**
      * Private listeners
@@ -130,7 +132,7 @@ public class MuseHandler implements Closeable {
     MuseHandler(Muse muse, @NonNull EventBus bus) {
         this.muse = muse;
         this.bus = bus;
-
+        this.mConcentrationManager = new ConcetrationManager();
     }
 
     void connect() {
@@ -225,7 +227,9 @@ public class MuseHandler implements Closeable {
             @Override
             public void receiveMuseDataPacket(MuseDataPacket museDataPacket) {
                 if (museDataPacket.getPacketType() == MuseDataPacketType.CONCENTRATION) {
-                    MuseHandler.this.bus.post(new FocusReading(museDataPacket.getValues().get(0)));
+                    mConcentrationManager.addConcentrationValue(museDataPacket.getValues().get(0));
+                    double value = mConcentrationManager.getConcentration();
+                    MuseHandler.this.bus.post(new FocusReading(value));
                 }
             }
 
