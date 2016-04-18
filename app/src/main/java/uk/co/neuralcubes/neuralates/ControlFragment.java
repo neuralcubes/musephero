@@ -43,7 +43,7 @@ public class ControlFragment extends Fragment implements RobotSetListener {
     private Optional<PairedMuse> mMuseHandler = Optional.absent();
     private Optional<ConvenienceRobot> mSphero = Optional.absent();
     private Optional<RobotController> mController = Optional.absent();
-    private ImageButton panicButton, forceButton, calibrateButton;
+    private ImageButton panicButton, forceButton, calibrateButton, noFocusButton, horizonButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,6 +80,8 @@ public class ControlFragment extends Fragment implements RobotSetListener {
         panicButton = (ImageButton) view.findViewById(R.id.calibrate_btn);
         forceButton = (ImageButton) view.findViewById(R.id.force_muse_btn);
         calibrateButton = (ImageButton) view.findViewById(R.id.muse_panic);
+        noFocusButton = (ImageButton) view.findViewById(R.id.noFocus);
+        horizonButton = (ImageButton) view.findViewById(R.id.resetHorizon);
 
         return view;
     }
