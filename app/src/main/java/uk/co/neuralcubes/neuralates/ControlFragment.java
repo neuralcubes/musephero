@@ -37,7 +37,6 @@ public class ControlFragment extends Fragment implements RobotSetListener {
     private static final Integer[] ELECTRODE_BUTTON_IDS = new Integer[]{R.id.fp1, R.id.fp2, R.id.tp9, R.id.tp10};
 
     private Spinner mSelectSphero, mSelectMuse;
-    private TextView mBatterySphero, mBatteryMuse;
     private Collection<Button> mElectrodeButtons;
     private EventBus mBus = new EventBus();
     private Optional<PairedMuse> mMuseHandler = Optional.absent();
@@ -45,18 +44,13 @@ public class ControlFragment extends Fragment implements RobotSetListener {
     private Optional<RobotController> mController = Optional.absent();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_control, container, false);
-        this.mBus.register(this);
 
-
-
-
+        mBus.register(this);
         mSelectSphero = (Spinner) view.findViewById(R.id.sphero_selector);
         SpheroManager.getInstance().addRobotSetListener(this);
-        this.updateRobots(SpheroManager.getInstance().getRobots());
-
+        updateRobots(SpheroManager.getInstance().getRobots());
 
         mSelectMuse = (Spinner) view.findViewById(R.id.muse_selector);
 
@@ -71,16 +65,9 @@ public class ControlFragment extends Fragment implements RobotSetListener {
         }));
 
         ArrayAdapter<String> adapterMuse = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, muses);
-
         adapterMuse.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSelectMuse.setAdapter(adapterMuse);
 
-        //System.out.println(view.getResources().getString(R.string.player)
-        //        view.findViewById(R.id.player_label));
-
-        // Get a reference to some resources
-        mBatteryMuse = (TextView) view.findViewById(R.id.battery_muse);
-        mBatterySphero = (TextView) view.findViewById(R.id.battery_sphero);
         mElectrodeButtons = Collections2.transform(Arrays.asList(ELECTRODE_BUTTON_IDS), new Function<Integer, Button>() {
             @Override
             public Button apply(Integer buttonId) {
@@ -109,7 +96,6 @@ public class ControlFragment extends Fragment implements RobotSetListener {
         });
 
         mSelectMuse.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                 //0 is the default "Choose muse" element in the spinner
@@ -162,13 +148,9 @@ public class ControlFragment extends Fragment implements RobotSetListener {
 
             @Override
             public void run() {
-                TextView batteryText = (TextView)
-                        getView().findViewById(R.id.battery_muse);
-
                 int i = 0;
-
                 for (Button button : mElectrodeButtons) {
-                    double quality = reading.getValues()[i] * 100;
+                    double quality = reading.getValues()[i++] * 100;
                     button.setText(String.format("%.2f%%", quality));
 
                     //Change colour to buttons,
@@ -179,7 +161,6 @@ public class ControlFragment extends Fragment implements RobotSetListener {
                     } else {
                         button.setPressed(false);
                     }
-                    i++;
                 }
             }
         });
