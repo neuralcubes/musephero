@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.common.collect.Lists;
 import com.orbotix.ConvenienceRobot;
 import com.orbotix.DualStackDiscoveryAgent;
 import com.orbotix.common.DiscoveryException;
@@ -12,8 +13,7 @@ import com.orbotix.common.Robot;
 import com.orbotix.common.RobotChangedStateListener;
 import com.orbotix.le.RobotLE;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by monchote on 14/04/2016.
@@ -22,7 +22,9 @@ public class SpheroManager implements RobotChangedStateListener
 {
     private static final String TAG = "SpheroManager";
 
-    private Set<Robot> mRobots = new HashSet<>();
+    private List<Robot> mRobots = Lists.newArrayList();
+
+    private List<RobotSetListener> robotSetListeners = Lists.newLinkedList();
 
     private static SpheroManager sInstance;
 
@@ -39,7 +41,7 @@ public class SpheroManager implements RobotChangedStateListener
         return sInstance;
     }
 
-    public Set<Robot> getRobots()
+    public List<Robot> getRobots()
     {
         return mRobots;
     }
@@ -63,7 +65,14 @@ public class SpheroManager implements RobotChangedStateListener
             DualStackDiscoveryAgent.getInstance().stopDiscovery();
         }
     }
-
+    public synchronized void addRobotSetListener(RobotSetListener listener){
+        this.robotSetListeners.add(listener);
+    }
+    public synchronized void notifyRobotSetListeners(){
+        for (RobotSetListener l: this.robotSetListeners){
+            l.updateRobots(this.mRobots);
+        }
+    }
     @Override
     public void handleRobotChangedState(Robot robot, RobotChangedStateNotificationType robotChangedStateNotificationType)
     {
@@ -79,11 +88,6 @@ public class SpheroManager implements RobotChangedStateListener
                 }
 
                 Log.d(TAG, "Robot " + robot.getName() + " is now online. Address: " + robot.getAddress());
-
-                mRobots.add(robot);
-
-                //Start blinking the robot's LED
-                blink(new ConvenienceRobot(robot), false);
                 break;
             }
             case Offline:
@@ -91,8 +95,19 @@ public class SpheroManager implements RobotChangedStateListener
                 mRobots.remove(robot);
                 break;
             case Connecting:
+                Log.d(TAG, "Robot " + robot.getName() + " is connecting.");
+
+                break;
             case Connected:
+                mRobots.add(robot);
+                //Start blinking the robot's LED
+                this.notifyRobotSetListeners();
+                Log.d(TAG, "Robot " + robot.getName() + " is connected.");
+                this.blink(new ConvenienceRobot(robot),true);
+                this.showTail(new ConvenienceRobot(robot));
+                break;
             case Disconnected:
+                break;
             case FailedConnect:
                 break;
         }
@@ -114,4 +129,16 @@ public class SpheroManager implements RobotChangedStateListener
             }
         }, 2000);
     }
+
+    private void showTail(@NonNull final ConvenienceRobot robot){
+        robot.setBackLedBrightness(1.0f);
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                robot.calibrating(false);
+            }
+        }, 2000);
+
+    }
+
 }
