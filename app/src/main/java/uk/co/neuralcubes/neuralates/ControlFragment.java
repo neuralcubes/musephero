@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -42,6 +43,7 @@ public class ControlFragment extends Fragment implements RobotSetListener {
     private Optional<PairedMuse> mMuseHandler = Optional.absent();
     private Optional<ConvenienceRobot> mSphero = Optional.absent();
     private Optional<RobotController> mController = Optional.absent();
+    private ImageButton mPanicButton, mForceButton, mCalibrateButton, mNoFocusButton, mHorizonButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,6 +77,39 @@ public class ControlFragment extends Fragment implements RobotSetListener {
             }
         });
 
+        mPanicButton = (ImageButton) view.findViewById(R.id.calibrate_btn);
+        mPanicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mSphero.isPresent()) {
+                    mSphero.get().stop();
+                }
+            }
+        });
+        mForceButton = (ImageButton) view.findViewById(R.id.force_muse_btn);
+        mCalibrateButton = (ImageButton) view.findViewById(R.id.muse_panic);
+        mNoFocusButton = (ImageButton) view.findViewById(R.id.noFocus);
+        mNoFocusButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if (mController.isPresent()) {
+                    mController.get().toggleOverrideFocus();
+                }
+            }
+        });
+        mHorizonButton = (ImageButton) view.findViewById(R.id.resetHorizon);
+        mHorizonButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                v.setSelected(!v.isSelected());
+                if (v.isSelected()) {
+                    if (mController.isPresent()) {
+                        mController.get().setBaseReading();
+                    }
+                }
+            }
+        });
+
         return view;
     }
 
@@ -87,11 +122,13 @@ public class ControlFragment extends Fragment implements RobotSetListener {
                 if (i > 0) {
                     //fix the offset
                     ControlFragment.this.mSphero = Optional.of(new ConvenienceRobot(SpheroManager.getInstance().getRobots().get(i-1)));
+                    enableSpheroActions();
                 }
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
                 // Another interface callback
+                disableSpheroActions();
             }
         });
 
@@ -103,6 +140,9 @@ public class ControlFragment extends Fragment implements RobotSetListener {
                     //fix the offset
                     mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i - 1));
                     mMuseHandler.get().connect(mBus);
+
+                    enableMuseActions();
+
                     if (mSphero.isPresent()) {
                         mController = Optional.of(new RobotController(mSphero.get(), mBus));
                     }
@@ -111,6 +151,7 @@ public class ControlFragment extends Fragment implements RobotSetListener {
 
             public void onNothingSelected(AdapterView<?> parent) {
                 // Another interface callback
+                disableMuseActions();
             }
         });
     }
@@ -193,5 +234,30 @@ public class ControlFragment extends Fragment implements RobotSetListener {
                 mSelectSphero.setAdapter(adapterSphero);
             }
         });
+    }
+
+    private void enableSpheroActions(){
+        mCalibrateButton.setEnabled(true);
+        mNoFocusButton.setEnabled(true);
+        mHorizonButton.setEnabled(true);
+    }
+
+    private void disableSpheroActions(){
+        mCalibrateButton.setEnabled(false);
+        mNoFocusButton.setEnabled(false);
+        mHorizonButton.setEnabled(false);
+    }
+
+    private void enableMuseActions(){
+        mPanicButton.setEnabled(true);
+        mForceButton.setEnabled(true);
+    }
+    private void disableMuseActions(){
+        mPanicButton.setEnabled(false);
+        mForceButton.setEnabled(false);
+        //extra actions
+        if (mController.isPresent()) {
+            mController.get().setOverrideFocus(false);
+        }
     }
 }

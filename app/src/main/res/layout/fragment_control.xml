@@ -5,219 +5,210 @@
     tools:context="uk.co.neuralcubes.neuralates.ControlFragment">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_gravity="top|left"
+        android:orientation="vertical">
 
         <TextView
+            android:id="@+id/player_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/player"
-            android:id="@+id/player_label"
-            />
+            android:text="@string/player" />
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_column="2">
+            android:layout_column="2"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/sphero_selector"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColor="@android:color/darker_gray" />
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:layout_height="match_parent"
+                android:layout_weight="7"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
-                <Spinner
+                <ImageView
+                    android:id="@+id/ic_battery_sphero"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/darker_gray"
-                    android:id="@+id/sphero_selector"
-                    android:layout_marginTop="@dimen/vertical_margin" />
+                    android:rotation="90"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_battery_50_black_24dp" />
 
-                <LinearLayout
-                    android:orientation="horizontal"
+                <TextView
+                    android:id="@+id/battery_sphero"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_battery_50_black_24dp"
-                        android:id="@+id/ic_battery_sphero"
-                        android:rotation="90"
-                        android:scaleType="fitXY" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/ellipsis"
-                        android:id="@+id/battery_sphero"
-                        android:textSize="@dimen/battery_text_size" />
-                </LinearLayout>
-
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/battery_text_size"
+                    android:text="@string/ellipsis" />
             </LinearLayout>
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="9"
-                android:layout_gravity="right">
+        </LinearLayout>
 
-                <ImageButton
+        <TextView
+            android:id="@+id/muse_connection_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="@string/muse_disconnected"
+            android:textAlignment="center"
+            android:textSize="@dimen/battery_text_size" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/column_horizontal_margin"
+            android:paddingRight="@dimen/column_horizontal_margin">
+
+            <Spinner
+                android:id="@+id/muse_selector"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:textColor="@android:color/darker_gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="left"
+                android:layout_weight="7"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/ic_battery_muse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_my_location_black_24dp"
-                    android:id="@+id/calibrate_btn"
-                    android:layout_marginTop="@dimen/vertical_margin"
-                    android:layout_gravity="right" />
+                    android:rotation="90"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_battery_50_black_24dp" />
 
+                <TextView
+                    android:id="@+id/battery_muse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/battery_text_size"
+                    android:text="@string/ellipsis" />
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/column_horizontal_margin"
-            android:paddingRight="@dimen/column_horizontal_margin">
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
+            <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:layout_marginLeft="12dip"
+                android:layout_marginStart="12dip"
+                android:columnCount="4"
+                android:rowCount="2">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    />
+                <Button
+                    android:id="@+id/fp1"
+                    android:layout_width="@dimen/electrode_size"
+                    android:layout_height="@dimen/electrode_size"
+                    android:layout_column="1"
+                    android:layout_marginEnd="@dimen/electrode_margin"
+                    android:layout_marginRight="@dimen/electrode_margin"
+                    android:layout_row="0"
+                    android:background="@drawable/electrode"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/percentage_100"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/electrode_text_size" />
 
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/darker_gray"
-                    android:id="@+id/muse_selector"
-                    android:layout_marginTop="@dimen/vertical_margin" />
+                <Button
+                    android:id="@+id/fp2"
+                    android:layout_width="@dimen/electrode_size"
+                    android:layout_height="@dimen/electrode_size"
+                    android:layout_column="2"
+                    android:layout_marginLeft="@dimen/electrode_margin"
+                    android:layout_marginStart="@dimen/electrode_margin"
+                    android:layout_row="0"
+                    android:background="@drawable/electrode"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/percentage_100"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/electrode_text_size" />
 
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/tp9"
+                    android:layout_width="@dimen/electrode_size"
+                    android:layout_height="@dimen/electrode_size"
+                    android:layout_column="0"
+                    android:layout_row="1"
+                    android:background="@drawable/electrode"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/percentage_100"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/electrode_text_size" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_battery_50_black_24dp"
-                        android:id="@+id/ic_battery_muse"
-                        android:rotation="90"
-                        android:scaleType="fitXY"
-                        android:layout_gravity="right" />
+                <Button
+                    android:id="@+id/tp10"
+                    android:layout_width="@dimen/electrode_size"
+                    android:layout_height="@dimen/electrode_size"
+                    android:layout_column="3"
+                    android:layout_row="1"
+                    android:background="@drawable/electrode"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/percentage_100"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/electrode_text_size" />
+            </GridLayout>
+        </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/ellipsis"
-                        android:id="@+id/battery_muse"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/battery_text_size"
-                        android:layout_gravity="right" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/muse_disconnected"
-                        android:id="@+id/muse_connection_status"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/battery_text_size"
-                        android:layout_gravity="right"
-                        android:layout_marginLeft="10dp" />
-                </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:orientation="horizontal">
 
-                <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:rowCount="2"
-                    android:columnCount="4"
-                    android:layout_marginTop="@dimen/vertical_margin"
-                    android:layout_marginStart="12dip"
-                    android:layout_marginLeft="12dip">
-
-                    <Button
-                        android:layout_width="@dimen/electrode_size"
-                        android:layout_height="@dimen/electrode_size"
-                        android:background="@drawable/electrode"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="@string/percentage_100"
-                        android:layout_row="0"
-                        android:layout_column="1"
-                        android:id="@+id/fp1"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/electrode_text_size"
-                        android:layout_marginEnd="@dimen/electrode_margin"
-                        android:layout_marginRight="@dimen/electrode_margin" />
-                    <Button
-                        android:layout_width="@dimen/electrode_size"
-                        android:layout_height="@dimen/electrode_size"
-                        android:background="@drawable/electrode"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="@string/percentage_100"
-                        android:layout_row="0"
-                        android:layout_column="2"
-                        android:id="@+id/fp2"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/electrode_text_size"
-                        android:layout_marginStart="@dimen/electrode_margin"
-                        android:layout_marginLeft="@dimen/electrode_margin" />
-
-                    <Button
-                        android:layout_width="@dimen/electrode_size"
-                        android:layout_height="@dimen/electrode_size"
-                        android:background="@drawable/electrode"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="@string/percentage_100"
-                        android:layout_row="1"
-                        android:layout_column="0"
-                        android:id="@+id/tp9"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/electrode_text_size"
-                        />
-                    <Button
-                        android:layout_width="@dimen/electrode_size"
-                        android:layout_height="@dimen/electrode_size"
-                        android:background="@drawable/electrode"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="@string/percentage_100"
-                        android:layout_row="1"
-                        android:layout_column="3"
-                        android:id="@+id/tp10"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/electrode_text_size"
-                        />
-                </GridLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
+            <ImageButton
+                android:id="@+id/calibrate_btn"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_weight="9">
+                android:src="@android:drawable/ic_menu_add" />
 
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_build_black_24dp"
-                    android:id="@+id/force_muse_btn"
-                    android:layout_marginTop="@dimen/vertical_margin"
-                    android:layout_weight="1"
-                    android:layout_gravity="right" />
+            <ImageButton
+                android:id="@+id/force_muse_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_preferences" />
 
-            </LinearLayout>
+            <ImageButton
+                android:id="@+id/resetHorizon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_rotate" />
 
+            <ImageButton
+                android:id="@+id/noFocus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:baselineAlignBottom="false"
+                android:src="@android:drawable/ic_dialog_alert" />
+
+            <ImageButton
+                android:id="@+id/muse_panic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_delete" />
         </LinearLayout>
 
     </LinearLayout>
