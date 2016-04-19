@@ -2,6 +2,7 @@ package uk.co.neuralcubes.neuralates;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +44,8 @@ public class ControlFragment extends Fragment implements RobotSetListener {
     private Optional<PairedMuse> mMuseHandler = Optional.absent();
     private Optional<ConvenienceRobot> mSphero = Optional.absent();
     private Optional<RobotController> mController = Optional.absent();
-    private ImageButton mPanicButton, mForceButton, mCalibrateButton, mNoFocusButton, mHorizonButton;
+    private View[] mSpheroActions;
+    private View[] mMuseActions;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,8 +79,8 @@ public class ControlFragment extends Fragment implements RobotSetListener {
             }
         });
 
-        mPanicButton = (ImageButton) view.findViewById(R.id.calibrate_btn);
-        mPanicButton.setOnClickListener(new View.OnClickListener() {
+        View panicButton = view.findViewById(R.id.calibrate_btn);
+        panicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mSphero.isPresent()) {
@@ -86,10 +88,10 @@ public class ControlFragment extends Fragment implements RobotSetListener {
                 }
             }
         });
-        mForceButton = (ImageButton) view.findViewById(R.id.force_muse_btn);
-        mCalibrateButton = (ImageButton) view.findViewById(R.id.muse_panic);
-        mNoFocusButton = (ImageButton) view.findViewById(R.id.noFocus);
-        mNoFocusButton.setOnClickListener(new View.OnClickListener(){
+        View forceButton = view.findViewById(R.id.force_muse_btn);
+        View calibrateButton = view.findViewById(R.id.muse_panic);
+        View noFocusButton = view.findViewById(R.id.noFocus);
+        noFocusButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 if (mController.isPresent()) {
@@ -97,8 +99,8 @@ public class ControlFragment extends Fragment implements RobotSetListener {
                 }
             }
         });
-        mHorizonButton = (ImageButton) view.findViewById(R.id.resetHorizon);
-        mHorizonButton.setOnClickListener(new View.OnClickListener(){
+        View horizonButton = view.findViewById(R.id.resetHorizon);
+        horizonButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 v.setSelected(!v.isSelected());
@@ -109,6 +111,9 @@ public class ControlFragment extends Fragment implements RobotSetListener {
                 }
             }
         });
+
+        mSpheroActions = new View[] {calibrateButton, noFocusButton, horizonButton};
+        mMuseActions = new View[] {panicButton, forceButton};
 
         return view;
     }
@@ -121,14 +126,14 @@ public class ControlFragment extends Fragment implements RobotSetListener {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i > 0) {
                     //fix the offset
-                    ControlFragment.this.mSphero = Optional.of(new ConvenienceRobot(SpheroManager.getInstance().getRobots().get(i-1)));
-                    enableSpheroActions();
+                    mSphero = Optional.of(new ConvenienceRobot(SpheroManager.getInstance().getRobots().get(i-1)));
+                    setEnabledStateForViews(mSpheroActions, true);
                 }
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
                 // Another interface callback
-                disableSpheroActions();
+                setEnabledStateForViews(mSpheroActions, false);
             }
         });
 
@@ -141,7 +146,7 @@ public class ControlFragment extends Fragment implements RobotSetListener {
                     mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i - 1));
                     mMuseHandler.get().connect(mBus);
 
-                    enableMuseActions();
+                    setEnabledStateForViews(mMuseActions, true);
 
                     if (mSphero.isPresent()) {
                         mController = Optional.of(new RobotController(mSphero.get(), mBus));
@@ -150,8 +155,10 @@ public class ControlFragment extends Fragment implements RobotSetListener {
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
-                // Another interface callback
-                disableMuseActions();
+                setEnabledStateForViews(mMuseActions, false);
+                if (mController.isPresent()) {
+                    mController.get().setOverrideFocus(false);
+                }
             }
         });
     }
@@ -236,28 +243,7 @@ public class ControlFragment extends Fragment implements RobotSetListener {
         });
     }
 
-    private void enableSpheroActions(){
-        mCalibrateButton.setEnabled(true);
-        mNoFocusButton.setEnabled(true);
-        mHorizonButton.setEnabled(true);
-    }
-
-    private void disableSpheroActions(){
-        mCalibrateButton.setEnabled(false);
-        mNoFocusButton.setEnabled(false);
-        mHorizonButton.setEnabled(false);
-    }
-
-    private void enableMuseActions(){
-        mPanicButton.setEnabled(true);
-        mForceButton.setEnabled(true);
-    }
-    private void disableMuseActions(){
-        mPanicButton.setEnabled(false);
-        mForceButton.setEnabled(false);
-        //extra actions
-        if (mController.isPresent()) {
-            mController.get().setOverrideFocus(false);
-        }
+    private void setEnabledStateForViews(@NonNull View[] views, boolean enabled) {
+        for (View view : views) { view.setEnabled(enabled); }
     }
 }
