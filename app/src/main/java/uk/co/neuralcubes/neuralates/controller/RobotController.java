@@ -12,11 +12,13 @@ import uk.co.neuralcubes.neuralates.muse.MuseHandler;
  * Created by javi on 17/04/16.
  */
 public class RobotController {
+    private static final String TAG = "ROBOT_CONTROLLER";
     final private ConvenienceRobot mRobot;
     final private EventBus mBus;
     boolean mRunning;
     //valid values from 0 to 1
-    private float mThrust=0.1f;
+    private static final double MAX_THRUST = 0.1;
+    private double mConcentration = 0.0;
 
 
     public RobotController(@NonNull ConvenienceRobot mRobot,@NonNull EventBus mBus) {
@@ -32,7 +34,16 @@ public class RobotController {
     @Subscribe
     public synchronized void updateAcelerometer(MuseHandler.AccelerometerReading reading){
 
-        mRobot.drive(computeAngle(reading.getX(),reading.getY()),this.mThrust);
+        mRobot.drive(computeAngle(reading.getX(),reading.getY()),getThrust());
+    }
+
+    float getThrust(){
+            return (float)( mConcentration * MAX_THRUST);
+    }
+
+    @Subscribe
+    public synchronized void updateConcentration(MuseHandler.FocusReading reading){
+        this.mConcentration=reading.getFocus();
     }
 
     static float computeAngle (double x,double y){
