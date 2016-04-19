@@ -140,7 +140,7 @@ public class ControlFragment extends Fragment implements RobotSetListener {
                     //fix the offset
                     mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i - 1));
                     mMuseHandler.get().connect(mBus);
-                    enableMusActions();
+                    enableMuseActions();
                 }
             }
 
@@ -243,7 +243,7 @@ public class ControlFragment extends Fragment implements RobotSetListener {
         horizonButton.setEnabled(false);
     }
 
-    private void enableMusActions(){
+    private void enableMuseActions(){
         panicButton.setEnabled(true);
         forceButton.setEnabled(true);
     }
