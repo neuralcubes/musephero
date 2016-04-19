@@ -12,27 +12,36 @@ import uk.co.neuralcubes.neuralates.muse.MuseHandler;
  * Created by javi on 17/04/16.
  */
 public class RobotController {
+    private static final String TAG = "ROBOT_CONTROLLER";
     final private ConvenienceRobot mRobot;
     final private EventBus mBus;
-    boolean mRunning;
-    //valid values from 0 to 1
-    private float mThrust=0.1f;
-    private boolean mOverrideFocus = false;
-    private MuseHandler.AccelerometerReading baseReading;
 
-    public RobotController(@NonNull ConvenienceRobot mRobot,@NonNull EventBus mBus) {
-        this.mRobot = mRobot;
-        this.mBus = mBus;
-        this.mBus.register(this);
+    private static final double MAX_THRUST = 0.1; //valid values from 0 to 1
+    private double mConcentration = 0.0;
+    private boolean mOverrideFocus = false;
+
+    public RobotController(@NonNull ConvenienceRobot robot ,@NonNull EventBus bus) {
+        mRobot = robot;
+        mBus = bus;
+        mBus.register(this);
     }
 
     public void unlink(){
-        this.mBus.unregister(this);
+        mBus.unregister(this);
     }
 
     @Subscribe
-    public synchronized void updateAcelerometer(MuseHandler.AccelerometerReading reading){
-        mRobot.drive(computeAngle(reading.getX(),reading.getY()),this.mThrust);
+    public synchronized void updateAcelerometer(MuseHandler.AccelerometerReading reading) {
+        mRobot.drive(computeAngle(reading.getX(),reading.getY()),getThrust());
+    }
+
+    float getThrust(){
+            return (float)( mConcentration * MAX_THRUST);
+    }
+
+    @Subscribe
+    public synchronized void updateConcentration(MuseHandler.FocusReading reading) {
+        mConcentration = reading.getFocus();
     }
 
     static float computeAngle (double x,double y){
