@@ -95,7 +95,7 @@ public class ControlFragment extends Fragment implements RobotSetListener {
             @Override
             public void onClick(View v) {
                 if (mController.isPresent()) {
-                    mController.get().toggleOverrideFocus();
+                    mController.get().setOverrideFocus(v.isEnabled());
                 }
             }
         });
