@@ -43,7 +43,7 @@ public class ControlFragment extends Fragment implements RobotSetListener {
     private Optional<PairedMuse> mMuseHandler = Optional.absent();
     private Optional<ConvenienceRobot> mSphero = Optional.absent();
     private Optional<RobotController> mController = Optional.absent();
-    private ImageButton panicButton, forceButton, calibrateButton, noFocusButton, horizonButton;
+    private ImageButton mPanicButton, mForceButton, mCalibrateButton, mNoFocusButton, mHorizonButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,8 +77,8 @@ public class ControlFragment extends Fragment implements RobotSetListener {
             }
         });
 
-        panicButton = (ImageButton) view.findViewById(R.id.calibrate_btn);
-        panicButton.setOnClickListener(new View.OnClickListener() {
+        mPanicButton = (ImageButton) view.findViewById(R.id.calibrate_btn);
+        mPanicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mSphero.isPresent()) {
@@ -86,10 +86,10 @@ public class ControlFragment extends Fragment implements RobotSetListener {
                 }
             }
         });
-        forceButton = (ImageButton) view.findViewById(R.id.force_muse_btn);
-        calibrateButton = (ImageButton) view.findViewById(R.id.muse_panic);
-        noFocusButton = (ImageButton) view.findViewById(R.id.noFocus);
-        noFocusButton.setOnClickListener(new View.OnClickListener(){
+        mForceButton = (ImageButton) view.findViewById(R.id.force_muse_btn);
+        mCalibrateButton = (ImageButton) view.findViewById(R.id.muse_panic);
+        mNoFocusButton = (ImageButton) view.findViewById(R.id.noFocus);
+        mNoFocusButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 if (mController.isPresent()) {
@@ -97,8 +97,8 @@ public class ControlFragment extends Fragment implements RobotSetListener {
                 }
             }
         });
-        horizonButton = (ImageButton) view.findViewById(R.id.resetHorizon);
-        horizonButton.setOnClickListener(new View.OnClickListener(){
+        mHorizonButton = (ImageButton) view.findViewById(R.id.resetHorizon);
+        mHorizonButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 v.setSelected(!v.isSelected());
@@ -237,24 +237,24 @@ public class ControlFragment extends Fragment implements RobotSetListener {
     }
 
     private void enableSpheroActions(){
-        calibrateButton.setEnabled(true);
-        noFocusButton.setEnabled(true);
-        horizonButton.setEnabled(true);
+        mCalibrateButton.setEnabled(true);
+        mNoFocusButton.setEnabled(true);
+        mHorizonButton.setEnabled(true);
     }
 
     private void disableSpheroActions(){
-        calibrateButton.setEnabled(false);
-        noFocusButton.setEnabled(false);
-        horizonButton.setEnabled(false);
+        mCalibrateButton.setEnabled(false);
+        mNoFocusButton.setEnabled(false);
+        mHorizonButton.setEnabled(false);
     }
 
     private void enableMuseActions(){
-        panicButton.setEnabled(true);
-        forceButton.setEnabled(true);
+        mPanicButton.setEnabled(true);
+        mForceButton.setEnabled(true);
     }
     private void disableMuseActions(){
-        panicButton.setEnabled(false);
-        forceButton.setEnabled(false);
+        mPanicButton.setEnabled(false);
+        mForceButton.setEnabled(false);
         //extra actions
         if (mController.isPresent()) {
             mController.get().setOverrideFocus(false);
