@@ -41,7 +41,7 @@ public class RobotController {
 
     @Subscribe
     public synchronized void updateConcentration(MuseHandler.FocusReading reading) {
-        mConcentration = reading.getFocus();
+        mConcentration = mOverrideFocus?(MAX_THRUST*0.7):reading.getFocus();
     }
 
     static float computeAngle (double x,double y){
@@ -60,12 +60,8 @@ public class RobotController {
         return (float)( (theta * 180 / Math.PI) % 360);
     }
 
-    public void setOverrideFocus(boolean overrideFocus) {
+    public synchronized void setOverrideFocus(boolean overrideFocus) {
         mOverrideFocus = overrideFocus;
-    }
-
-    public void toggleOverrideFocus() {
-        mOverrideFocus = !mOverrideFocus;
     }
 
     public synchronized void setBaseReading() {
