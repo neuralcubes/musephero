@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:rotation="90"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ic_battery_50_black_24dp" />
+                    android:src="@drawable/ic_battery_unknown_black_24dp" />
 
                 <TextView
                     android:id="@+id/battery_sphero"
@@ -92,7 +92,7 @@
                     android:layout_height="wrap_content"
                     android:rotation="90"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ic_battery_50_black_24dp" />
+                    android:src="@drawable/ic_battery_unknown_black_24dp" />
 
                 <TextView
                     android:id="@+id/battery_muse"
