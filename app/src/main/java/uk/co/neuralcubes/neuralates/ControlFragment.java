@@ -94,7 +94,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         View forceButton = view.findViewById(R.id.force_muse_btn);
         View calibrateButton = view.findViewById(R.id.muse_panic);
         View noFocusButton = view.findViewById(R.id.noFocus);
-        noFocusButton.setOnClickListener(new View.OnClickListener(){
+        noFocusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mController.isPresent()) {
@@ -103,7 +103,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             }
         });
         View horizonButton = view.findViewById(R.id.resetHorizon);
-        horizonButton.setOnClickListener(new View.OnClickListener(){
+        horizonButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 v.setSelected(!v.isSelected());
@@ -115,8 +115,8 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             }
         });
 
-        mSpheroActions = new View[] {calibrateButton, noFocusButton, horizonButton};
-        mMuseActions = new View[] {panicButton, forceButton};
+        mSpheroActions = new View[]{calibrateButton, noFocusButton, horizonButton};
+        mMuseActions = new View[]{panicButton, forceButton};
 
         return view;
     }
@@ -148,11 +148,18 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         if (adapterView == mSelectSphero) {
             setEnabledStateForViews(mSpheroActions, false);
             onPowerStateUpdate(null, null);
+            if (mController.isPresent()) {
+                mController.get().unlink();
+            }
+            mController = Optional.absent();
+            mSphero = Optional.absent();
         } else if (adapterView == mSelectMuse) {
             setEnabledStateForViews(mMuseActions, false);
             if (mController.isPresent()) {
-                mController.get().setOverrideFocus(false);
+                mController.get().unlink();
             }
+            mController = Optional.absent();
+            mMuseHandler = Optional.absent();
         }
     }
 
@@ -247,7 +254,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 List<String> tmpArraySphero = Lists.newArrayList();
                 tmpArraySphero.add(getResources().getString(R.string.sphero_selector_header));
                 tmpArraySphero.addAll(Collections2.transform(robots,
-                        new Function<Robot, String>(){
+                        new Function<Robot, String>() {
                             @Override
                             public String apply(Robot bender) {
                                 return bender.getName();
@@ -265,6 +272,8 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
     }
 
     private void setEnabledStateForViews(@NonNull View[] views, boolean enabled) {
-        for (View view : views) { view.setEnabled(enabled); }
+        for (View view : views) {
+            view.setEnabled(enabled);
+        }
     }
 }
