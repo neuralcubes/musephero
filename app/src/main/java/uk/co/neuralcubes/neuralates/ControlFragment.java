@@ -4,13 +4,14 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -22,7 +23,12 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.interaxon.libmuse.ConnectionState;
 import com.orbotix.ConvenienceRobot;
+import com.orbotix.command.GetPowerStateCommand;
+import com.orbotix.command.GetPowerStateResponse;
+import com.orbotix.common.ResponseListener;
 import com.orbotix.common.Robot;
+import com.orbotix.common.internal.AsyncMessage;
+import com.orbotix.common.internal.DeviceResponse;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,7 +40,7 @@ import uk.co.neuralcubes.neuralates.muse.PairedMuse;
 import uk.co.neuralcubes.neuralates.sphero.RobotSetListener;
 import uk.co.neuralcubes.neuralates.sphero.SpheroManager;
 
-public class ControlFragment extends Fragment implements RobotSetListener {
+public class ControlFragment extends Fragment implements RobotSetListener, AdapterView.OnItemSelectedListener, ResponseListener {
 
     private static final Integer[] ELECTRODE_BUTTON_IDS = new Integer[]{R.id.fp1, R.id.fp2, R.id.tp9, R.id.tp10};
 
@@ -53,6 +59,7 @@ public class ControlFragment extends Fragment implements RobotSetListener {
 
         mBus.register(this);
         mSelectSphero = (Spinner) view.findViewById(R.id.sphero_selector);
+        mSelectSphero.setOnItemSelectedListener(this);
         SpheroManager.getInstance().addRobotSetListener(this);
         updateRobots(SpheroManager.getInstance().getRobots());
 
@@ -71,6 +78,7 @@ public class ControlFragment extends Fragment implements RobotSetListener {
         ArrayAdapter<String> adapterMuse = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, muses);
         adapterMuse.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSelectMuse.setAdapter(adapterMuse);
+        mSelectMuse.setOnItemSelectedListener(this);
 
         mElectrodeButtons = Collections2.transform(Arrays.asList(ELECTRODE_BUTTON_IDS), new Function<Integer, Button>() {
             @Override
@@ -118,72 +126,119 @@ public class ControlFragment extends Fragment implements RobotSetListener {
         return view;
     }
 
+    // BEGINNING - AdapterView.OnItemSelectedListener
+
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if (i <= 0) {
+            onNothingSelected(adapterView);
+            return;
+        }
+        if (adapterView == mSelectSphero) {
+            //fix the offset
+            mSphero = Optional.of(new ConvenienceRobot(SpheroManager.getInstance().getRobots().get(i - 1)));
+            setEnabledStateForViews(mSpheroActions, mSphero.isPresent());
+            if (mSphero.isPresent()) {
+                mSphero.get().addResponseListener(this);
+                mSphero.get().sendCommand(new GetPowerStateCommand());
+            }
+        } else if (adapterView == mSelectMuse) {
+            mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i - 1));
+            mMuseHandler.get().connect(mBus);
+
+            setEnabledStateForViews(mMuseActions, true);
+
+            if (mSphero.isPresent()) {
+                mController = Optional.of(new RobotController(mSphero.get(), mBus));
+            }
+        }
+    }
+
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        if (adapterView == mSelectSphero) {
+            setEnabledStateForViews(mSpheroActions, false);
+            if (mSphero.isPresent()) {
+                mSphero.get().removeResponseListener(this);
+                updateSpheroBatteryLevel(null);
+            }
+        } else if (adapterView == mSelectMuse) {
+            setEnabledStateForViews(mMuseActions, false);
+            if (mController.isPresent()) {
+                mController.get().setOverrideFocus(false);
+            }
+        }
+    }
+
+    // END - AdapterView.OnItemSelectedListener
+
+    // BEGINNING - Sphero's ResponseListener
+
     @Override
-    public void onStart() {
-        super.onStart();
+    public void handleResponse(DeviceResponse deviceResponse, Robot robot) {
+        Log.d("SPHERO", "handleResponse" + deviceResponse.toString());
+        if (deviceResponse instanceof GetPowerStateResponse) {
+            updateSpheroBatteryLevel(((GetPowerStateResponse)deviceResponse).getPowerState());
+        }
+    }
 
-        mSelectSphero.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i > 0) {
-                    //fix the offset
-                    mSphero = Optional.of(new ConvenienceRobot(SpheroManager.getInstance().getRobots().get(i-1)));
-                    setEnabledStateForViews(mSpheroActions, true);
-                }
-            }
+    @Override
+    public void handleStringResponse(String s, Robot robot) {
+        Log.d("SPHERO", "handleStringResponse" + s.toString());
+    }
 
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Another interface callback
-                setEnabledStateForViews(mSpheroActions, false);
-            }
-        });
+    @Override
+    public void handleAsyncMessage(AsyncMessage asyncMessage, Robot robot) {
+        Log.d("SPHERO", "handleAsyncMessage" + asyncMessage.toString());
+    }
 
-        mSelectMuse.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+    // END - Sphero's ResponseListener
 
-                //0 is the default "Choose muse" element in the spinner
-                if (i > 0) {
-                    //fix the offset
-                    mMuseHandler = Optional.of(PairedMuse.getPairedMuses().get(i - 1));
-                    mMuseHandler.get().connect(mBus);
+    private void updateSpheroBatteryLevel(GetPowerStateResponse.PowerState powerState) {
+        TextView batteryText = (TextView) getView().findViewById(R.id.battery_sphero);
+        ImageView batteryIcon = (ImageView) getView().findViewById(R.id.ic_battery_sphero);
 
-                    setEnabledStateForViews(mMuseActions, true);
+        if (powerState == null) {
+            batteryIcon.setImageResource(R.drawable.ic_battery_unknown_black_24dp);
+            batteryText.setText(R.string.ellipsis);
+            return;
+        }
 
-                    if (mSphero.isPresent()) {
-                        mController = Optional.of(new RobotController(mSphero.get(), mBus));
-                    }
-                }
-            }
-
-            public void onNothingSelected(AdapterView<?> parent) {
-                setEnabledStateForViews(mMuseActions, false);
-                if (mController.isPresent()) {
-                    mController.get().setOverrideFocus(false);
-                }
-            }
-        });
+        batteryText.setText(powerState.name());
+        switch (powerState) {
+            case OK:
+                batteryIcon.setImageResource(R.drawable.ic_battery_80_black_24dp);
+                break;
+            case LOW:
+                batteryIcon.setImageResource(R.drawable.ic_battery_20_black_24dp);
+                break;
+            case CRITICAL:
+                batteryIcon.setImageResource(R.drawable.ic_battery_alert_black_24dp);
+                break;
+            case CHARGING:
+                batteryIcon.setImageResource(R.drawable.ic_battery_charging_60_black_24dp);
+                break;
+            default:
+                batteryIcon.setImageResource(R.drawable.ic_battery_unknown_black_24dp);
+                break;
+        }
     }
 
     @Subscribe
     public void updateMuseConnectionState(final ConnectionState state) {
         this.getActivity().runOnUiThread(new Runnable() {
-
             @Override
             public void run() {
-                TextView connectionStatusText = (TextView)
-                        getView().findViewById(R.id.muse_connection_status);
+                TextView connectionStatusText = (TextView) getView().findViewById(R.id.muse_connection_status);
                 connectionStatusText.setText(state.toString());
             }
         });
     }
 
     @Subscribe
-    public void updateMuseBattery(final MuseHandler.BatteryReading reading) {
+    public void updateMuseBatteryLevel(final MuseHandler.BatteryReading reading) {
         this.getActivity().runOnUiThread(new Runnable() {
-
             @Override
             public void run() {
-                TextView batteryText = (TextView)
-                        getView().findViewById(R.id.battery_muse);
+                TextView batteryText = (TextView) getView().findViewById(R.id.battery_muse);
                 batteryText.setText(String.format("%.2f%%", reading.getLevel()));
                 //be careful when the reading is less that 0.25
                 if (reading.getLevel() < 0.25) {
@@ -196,7 +251,6 @@ public class ControlFragment extends Fragment implements RobotSetListener {
     @Subscribe
     public void updateMuseHorseshoe(final MuseHandler.HorseshoeReading reading) {
         this.getActivity().runOnUiThread(new Runnable() {
-
             @Override
             public void run() {
                 int i = 0;
@@ -215,7 +269,6 @@ public class ControlFragment extends Fragment implements RobotSetListener {
                 }
             }
         });
-
     }
 
     @Override
