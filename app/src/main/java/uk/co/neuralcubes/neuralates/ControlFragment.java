@@ -139,7 +139,9 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             setEnabledStateForViews(mMuseActions, true);
 
             if (mSphero.isPresent()) {
-                if (mController.isPresent()) mController.get().unlink();
+                if (mController.isPresent()) {
+                    mController.get().unlink();
+                }
                 mController = Optional.of(new RobotController(mSphero.get(), mBus));
             }
         }
