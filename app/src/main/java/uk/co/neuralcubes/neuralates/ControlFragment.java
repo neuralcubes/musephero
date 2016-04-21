@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import uk.co.neuralcubes.neuralates.controller.ColorMap;
 import uk.co.neuralcubes.neuralates.controller.RobotController;
 import uk.co.neuralcubes.neuralates.muse.MuseHandler;
 import uk.co.neuralcubes.neuralates.muse.PairedMuse;
@@ -142,7 +143,8 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 if (mController.isPresent()) {
                     mController.get().unlink();
                 }
-                mController = Optional.of(new RobotController(mSphero.get(), mBus));
+                mController = Optional.of(new RobotController(mSphero.get(),
+                                mBus, ColorMap.Greenish()));
             }
         }
     }
