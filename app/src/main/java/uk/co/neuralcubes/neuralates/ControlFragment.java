@@ -93,9 +93,9 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             }
         });
 
-        View forceButton = view.findViewById(R.id.force_muse_btn);
+
         View calibrateButton = view.findViewById(R.id.muse_panic);
-        View noFocusButton = view.findViewById(R.id.noFocus);
+        View noFocusButton = view.findViewById(R.id.no_focus);
         noFocusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,7 +105,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             }
         });
 
-        View horizonButton = view.findViewById(R.id.resetHorizon);
+        View horizonButton = view.findViewById(R.id.reset_horizon);
         horizonButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +119,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         });
 
         mSpheroActions = new View[]{calibrateButton, noFocusButton, horizonButton};
-        mMuseActions = new View[]{panicButton, forceButton};
+        mMuseActions = new View[]{panicButton};
 
         return view;
     }
