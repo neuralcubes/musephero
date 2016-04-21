@@ -92,6 +92,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 }
             }
         });
+
         View forceButton = view.findViewById(R.id.force_muse_btn);
         View calibrateButton = view.findViewById(R.id.muse_panic);
         View noFocusButton = view.findViewById(R.id.noFocus);
@@ -103,6 +104,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 }
             }
         });
+
         View horizonButton = view.findViewById(R.id.resetHorizon);
         horizonButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,8 +145,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 if (mController.isPresent()) {
                     mController.get().unlink();
                 }
-                mController = Optional.of(new RobotController(mSphero.get(),
-                                mBus, ColorMap.Greenish()));
+                mController = Optional.of(new RobotController(mSphero.get(), mBus, ColorMap.Greenish()));
             }
         }
     }
@@ -238,9 +239,9 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                     double quality = reading.getValues()[i++] * 100;
                     button.setText(String.format("%.2f%%", quality));
 
-                    //Change colour to buttons,
-                    //Green is ok
-                    //Blue is everything else
+                    // Change colour to buttons,
+                    // Green is ok
+                    // Blue is everything else
                     if (quality >= 75.) {
                         button.setPressed(true);
                     } else {

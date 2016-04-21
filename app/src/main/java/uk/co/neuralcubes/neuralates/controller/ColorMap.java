@@ -17,36 +17,32 @@ public class ColorMap {
      * @param value
      * @return the rgb colour
      */
-    public int[] map(double value){
-
+    public int[] map(double value) {
         int red = normalise(mMaxRGB[0],mMinRGB[0],value);
         int green = normalise(mMaxRGB[1],mMinRGB[1],value);
         int blue = normalise(mMaxRGB[2],mMinRGB[2],value);
         return new int[]{red,green,blue};
     }
 
-
-    private int normalise(int max,int min, double value){
-        //proyect into the straight line
+    private int normalise(int max,int min, double value) {
+        // project onto the straight line
         return (int)(value*(max-min)+min);
     }
 
     /*
-     *I got this values from http://colorbrewer2.org/
-     * and I asume that the gradients are linear, although they
+     * I got this values from http://colorbrewer2.org/
+     * and I assume that the gradients are linear, although they
      * are not strictly linear
      */
-
-    public static ColorMap Purpleish(){
-        return new ColorMap(new int[]{252,251,253},new int[]{63,0,125});
-    }
-    public static ColorMap Greenish(){
-        return new ColorMap(new int[]{247,252,245},new int[]{0,68,27});
+    public static ColorMap Purpleish() {
+        return new ColorMap(new int[]{252,251,253}, new int[]{63,0,125});
     }
 
-    public static ColorMap Blueish(){
-        return new ColorMap(new int[]{247,251,255},new int[]{8,48,107});
+    public static ColorMap Greenish() {
+        return new ColorMap(new int[]{247,252,245}, new int[]{0,68,27});
     }
 
-
+    public static ColorMap Blueish() {
+        return new ColorMap(new int[]{247,251,255}, new int[]{8,48,107});
+    }
 }
