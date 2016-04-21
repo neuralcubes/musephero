@@ -26,11 +26,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView tv = (TextView)findViewById(R.id.control1).findViewById(R.id.player_label);
-        tv.setText(getResources().getString(R.string.player, 1));
-        tv = (TextView)findViewById(R.id.control2).findViewById(R.id.player_label);
-        tv.setText(getResources().getString(R.string.player, 2));
-
         requestLocationPermission();
     }
 
