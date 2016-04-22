@@ -83,7 +83,7 @@ public class SpheroManager implements RobotChangedStateListener, ResponseListene
         this.mEventListeners.add(listener);
     }
 
-    public synchronized void notifyRobotSetListeners()
+    public void notifyRobotSetListeners()
     {
         for (SpheroEventListener l: this.mEventListeners) {
             l.updateRobots(mRobots);

@@ -83,7 +83,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             }
         });
 
-        View panicButton = view.findViewById(R.id.calibrate_btn);
+        View panicButton = view.findViewById(R.id.sphero_panic_btn);
         panicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,9 +93,9 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             }
         });
 
+        View calibrateButton = view.findViewById(R.id.sphero_calibrate_btn);
 
-        View calibrateButton = view.findViewById(R.id.muse_panic);
-        View noFocusButton = view.findViewById(R.id.no_focus);
+        View noFocusButton = view.findViewById(R.id.muse_no_focus_btn);
         noFocusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,7 +105,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             }
         });
 
-        View horizonButton = view.findViewById(R.id.reset_horizon);
+        View horizonButton = view.findViewById(R.id.muse_reset_horizon_btn);
         horizonButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,8 +118,8 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             }
         });
 
-        mSpheroActions = new View[]{calibrateButton, noFocusButton, horizonButton};
-        mMuseActions = new View[]{panicButton};
+        mSpheroActions = new View[]{calibrateButton, panicButton};
+        mMuseActions = new View[]{noFocusButton, horizonButton};
 
         return view;
     }
@@ -254,27 +254,22 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
 
     @Override
     public void updateRobots(final List<Robot> robots) {
-        this.getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                List<String> tmpArraySphero = Lists.newArrayList();
-                tmpArraySphero.add(getResources().getString(R.string.sphero_selector_header));
-                tmpArraySphero.addAll(Collections2.transform(robots,
-                        new Function<Robot, String>() {
-                            @Override
-                            public String apply(Robot bender) {
-                                return bender.getName();
-                            }
-                        }
+        List<String> tmpArraySphero = Lists.newArrayList();
+        tmpArraySphero.add(getResources().getString(R.string.sphero_selector_header));
+        tmpArraySphero.addAll(Collections2.transform(robots,
+                new Function<Robot, String>() {
+                    @Override
+                    public String apply(Robot bender) {
+                        return bender.getName();
+                    }
+                }
 
-                ));
-                // Populate the spinner with the array
-                ArrayAdapter<String> adapterSphero = new ArrayAdapter<>(getContext(),
-                        android.R.layout.simple_spinner_item, tmpArraySphero);
-                adapterSphero.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                mSelectSphero.setAdapter(adapterSphero);
-            }
-        });
+        ));
+        // Populate the spinner with the array
+        ArrayAdapter<String> adapterSphero = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_spinner_item, tmpArraySphero);
+        adapterSphero.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSelectSphero.setAdapter(adapterSphero);
     }
 
     private void setEnabledStateForViews(@NonNull View[] views, boolean enabled) {
