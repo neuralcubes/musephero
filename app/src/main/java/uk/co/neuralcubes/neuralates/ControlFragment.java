@@ -54,7 +54,8 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
     private View[] mMuseActions;
     private Handler mStopCalibrationHandler;
     private View mConcentrationBar;
-    private ColorMap mColorMap;
+    private ColorMap mColorMap = ColorMap.GREENISH;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -127,7 +128,6 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         calibrateRightButton.setOnClickListener(calibrateClickListener);
 
 
-
         View horizonButton = view.findViewById(R.id.muse_reset_horizon_btn);
         horizonButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,7 +144,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(mController.isPresent()){
+                if (mController.isPresent()) {
                     mController.get().setOverrideFocus(isChecked);
                 }
             }
@@ -153,8 +153,8 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(mController.isPresent()){
-                    mController.get().setOverrideValue(((double) progress)/seekBar.getMax());
+                if (mController.isPresent()) {
+                    mController.get().setOverrideValue(((double) progress) / seekBar.getMax());
                 }
             }
 
@@ -173,10 +173,21 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         mMuseActions = new View[]{toggleButton, horizonButton};
 
         mConcentrationBar = view.findViewById(R.id.concentrationBar);
-
-        mColorMap = ColorMap.Greenish();
+        mConcentrationBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeColorMap();
+            }
+        });
 
         return view;
+    }
+
+    void changeColorMap() {
+        mColorMap = ColorMap.next(mColorMap);
+        if (mController.isPresent()) {
+            mController.get().setColorMap(mColorMap);
+        }
     }
 
     // BEGINNING - AdapterView.OnItemSelectedListener
@@ -200,7 +211,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 if (mController.isPresent()) {
                     mController.get().unlink();
                 }
-                mController = Optional.of(new RobotController(mSphero.get(), mBus, ColorMap.Greenish()));
+                mController = Optional.of(new RobotController(mSphero.get(), mBus, mColorMap));
             }
         }
     }
@@ -308,15 +319,23 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
     }
 
     @Subscribe
-    public synchronized void updateConcentration(MuseHandler.FocusReading reading) {
-        final int[] rgbColor = mColorMap.iMap(reading.getFocus());
+    public void updateConcentration(final MuseHandler.FocusReading reading) {
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mConcentrationBar.setBackgroundColor(Color.rgb(rgbColor[0], rgbColor[1], rgbColor[2]));
-                mConcentrationBar.invalidate();
+                updateConcentrationColor(reading.getFocus());
             }
         });
+    }
+
+    void updateConcentrationColor(double value) {
+        int[] border = mColorMap.map(0.3);
+        int[] rgbColor = mColorMap.inverseMap(value);
+
+        mConcentrationBar.setBackgroundColor(Color.rgb(rgbColor[0], rgbColor[1], rgbColor[2]));
+        ((View) mConcentrationBar.getParent()).setBackgroundColor(Color.rgb(border[0], border[1], border[2]));
+        mConcentrationBar.invalidate();
     }
 
     @Override
