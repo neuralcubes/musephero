@@ -31,6 +31,7 @@ import com.orbotix.command.GetPowerStateResponse;
 import com.orbotix.common.Robot;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
@@ -54,8 +55,9 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
     private View[] mSpheroActions;
     private View[] mMuseActions;
     private Handler mStopCalibrationHandler;
-    private ColorMap mColorMap = ColorMap.GREENISH;
-
+    private ColorMap mColorMap;
+    private float mAccumulatedFocus;
+    private int mAccumulatedStart, mAccumulatedStop;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -214,6 +216,10 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 changeColorMap();
             }
         });
+
+        mAccumulatedFocus = 0;
+        mAccumulatedStart = 0;
+        mAccumulatedStop = 0;
 
         return view;
     }
@@ -410,5 +416,22 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         for (View view : views) {
             view.setEnabled(enabled);
         }
+    }
+
+    private void startAccumulated() {
+        this.clearScore();
+        Calendar c = Calendar.getInstance();
+        mAccumulatedStart = c.get(Calendar.SECOND);
+    }
+
+    private void clearScore() {
+        mAccumulatedFocus = 0;
+        mAccumulatedStop = 0;
+        mAccumulatedStart= 0;
+    }
+
+    private void stopAccumulated() {
+        Calendar c = Calendar.getInstance();
+        mAccumulatedStop = c.get(Calendar.SECOND);
     }
 }
