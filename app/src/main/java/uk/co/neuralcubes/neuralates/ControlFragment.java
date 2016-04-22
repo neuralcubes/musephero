@@ -11,9 +11,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -123,15 +126,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         calibrateLeftButton.setOnClickListener(calibrateClickListener);
         calibrateRightButton.setOnClickListener(calibrateClickListener);
 
-        View noFocusButton = view.findViewById(R.id.muse_no_focus_btn);
-        noFocusButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mController.isPresent()) {
-                    mController.get().setOverrideFocus(v.isEnabled());
-                }
-            }
-        });
+
 
         View horizonButton = view.findViewById(R.id.muse_reset_horizon_btn);
         horizonButton.setOnClickListener(new View.OnClickListener() {
@@ -145,9 +140,37 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 }
             }
         });
+        ToggleButton toggleButton = (ToggleButton) view.findViewById(R.id.toggle_override);
+        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(mController.isPresent()){
+                    mController.get().setOverrideFocus(isChecked);
+                }
+            }
+        });
+        SeekBar seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(mController.isPresent()){
+                    mController.get().setOverrideValue(((double) progress)/seekBar.getMax());
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         mSpheroActions = new View[]{calibrateLeftButton, calibrateRightButton, panicButton};
-        mMuseActions = new View[]{noFocusButton, horizonButton};
+        mMuseActions = new View[]{toggleButton, horizonButton};
 
         mConcentrationBar = view.findViewById(R.id.concentrationBar);
 
