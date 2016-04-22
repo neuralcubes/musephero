@@ -50,6 +50,8 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
     private View[] mSpheroActions;
     private View[] mMuseActions;
     private Handler mStopCalibrationHandler;
+    private View mConcentrationBar;
+    private ColorMap mColorMap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -146,6 +148,10 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
 
         mSpheroActions = new View[]{calibrateLeftButton, calibrateRightButton, panicButton};
         mMuseActions = new View[]{noFocusButton, horizonButton};
+
+        mConcentrationBar = view.findViewById(R.id.concentrationBar);
+
+        mColorMap = ColorMap.Greenish();
 
         return view;
     }
@@ -274,6 +280,18 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                         button.setPressed(false);
                     }
                 }
+            }
+        });
+    }
+
+    @Subscribe
+    public synchronized void updateConcentration(MuseHandler.FocusReading reading) {
+        final int[] rgbColor = mColorMap.iMap(reading.getFocus());
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mConcentrationBar.setBackgroundColor(Color.rgb(rgbColor[0], rgbColor[1], rgbColor[2]));
+                mConcentrationBar.invalidate();
             }
         });
     }
