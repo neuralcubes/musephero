@@ -95,14 +95,16 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             }
         });
 
-        View calibrateButton = view.findViewById(R.id.sphero_calibrate_btn);
-        calibrateButton.setOnClickListener(new View.OnClickListener() {
+        final View calibrateRightButton = view.findViewById(R.id.sphero_calibrate_right_btn);
+        final View calibrateLeftButton = view.findViewById(R.id.sphero_calibrate_left_btn);
+        View.OnClickListener calibrateClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mSphero.isPresent()) {
+                    float newHeading = v == calibrateRightButton ? 30 : -30;
                     final ConvenienceRobot robot = mSphero.get();
                     robot.calibrating(true);
-                    robot.rotate(robot.getLastHeading() + 30);
+                    robot.rotate((robot.getLastHeading() + newHeading + 360) % 360);
                     if (mStopCalibrationHandler != null) {
                         mStopCalibrationHandler.removeCallbacksAndMessages(null);
                     }
@@ -115,7 +117,9 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                     }, 3000);
                 }
             }
-        });
+        };
+        calibrateLeftButton.setOnClickListener(calibrateClickListener);
+        calibrateRightButton.setOnClickListener(calibrateClickListener);
 
         View noFocusButton = view.findViewById(R.id.muse_no_focus_btn);
         noFocusButton.setOnClickListener(new View.OnClickListener() {
@@ -140,7 +144,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             }
         });
 
-        mSpheroActions = new View[]{calibrateButton, panicButton};
+        mSpheroActions = new View[]{calibrateLeftButton, calibrateRightButton, panicButton};
         mMuseActions = new View[]{noFocusButton, horizonButton};
 
         return view;

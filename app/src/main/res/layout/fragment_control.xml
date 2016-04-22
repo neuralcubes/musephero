@@ -175,10 +175,16 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/sphero_calibrate_btn"
+                android:id="@+id/sphero_calibrate_left_btn"
                 android:layout_width="@dimen/control_button_size"
                 android:layout_height="@dimen/control_button_size"
-                android:src="@drawable/ic_calibration_black_24dp" />
+                android:src="@drawable/ic_left_30_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/sphero_calibrate_right_btn"
+                android:layout_width="@dimen/control_button_size"
+                android:layout_height="@dimen/control_button_size"
+                android:src="@drawable/ic_right_30_black_24dp" />
 
             <ImageButton
                 android:id="@+id/sphero_panic_btn"
