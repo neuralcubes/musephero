@@ -24,6 +24,16 @@ public class ColorMap {
         return new int[]{red,green,blue};
     }
 
+    /**
+     * Get the inverse colour of the normal map function to be used on white
+     * background display
+     * @param value
+     * @return the rgb colour
+     */
+    public int[] iMap(double value) {
+        return this.map(1 - value);
+    }
+
     private int normalise(int max,int min, double value) {
         // project onto the straight line
         return (int)(value*(max-min)+min);
