@@ -213,7 +213,6 @@
             android:layout_height="match_parent"
             android:gravity="right">
             <ImageView
-                android:background="@color/concentrationLow"
                 android:id="@+id/concentrationBar"
                 android:layout_width="24dp"
                 android:layout_height="match_parent"
