@@ -181,19 +181,13 @@
                 android:src="@android:drawable/ic_menu_add" />
 
             <ImageButton
-                android:id="@+id/force_muse_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_preferences" />
-
-            <ImageButton
-                android:id="@+id/resetHorizon"
+                android:id="@+id/reset_horizon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@android:drawable/ic_menu_rotate" />
 
             <ImageButton
-                android:id="@+id/noFocus"
+                android:id="@+id/no_focus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:baselineAlignBottom="false"
