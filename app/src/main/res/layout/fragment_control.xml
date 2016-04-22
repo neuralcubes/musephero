@@ -198,13 +198,25 @@
                 android:layout_height="@dimen/control_button_size"
                 android:src="@drawable/ic_balance_black_24dp" />
 
-            <ImageButton
-                android:id="@+id/muse_no_focus_btn"
-                android:layout_width="@dimen/control_button_size"
-                android:layout_height="@dimen/control_button_size"
-                android:baselineAlignBottom="false"
-                android:src="@drawable/ic_warning_black_24dp" />
+        </LinearLayout>
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOn="@string/override"
+                android:textOff="@string/override"
+                android:id="@+id/toggle_override" />
+
+            <SeekBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/seek_bar"
+                android:layout_weight="1" />
         </LinearLayout>
 
         <LinearLayout
