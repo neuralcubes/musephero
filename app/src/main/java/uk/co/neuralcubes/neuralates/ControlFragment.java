@@ -2,6 +2,7 @@ package uk.co.neuralcubes.neuralates;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -48,6 +49,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
     private Optional<RobotController> mController = Optional.absent();
     private View[] mSpheroActions;
     private View[] mMuseActions;
+    private Handler mStopCalibrationHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -94,6 +96,26 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         });
 
         View calibrateButton = view.findViewById(R.id.sphero_calibrate_btn);
+        calibrateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mSphero.isPresent()) {
+                    final ConvenienceRobot robot = mSphero.get();
+                    robot.calibrating(true);
+                    robot.rotate(robot.getLastHeading() + 30);
+                    if (mStopCalibrationHandler != null) {
+                        mStopCalibrationHandler.removeCallbacksAndMessages(null);
+                    }
+                    mStopCalibrationHandler = new Handler();
+                    mStopCalibrationHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            robot.calibrating(false);
+                        }
+                    }, 3000);
+                }
+            }
+        });
 
         View noFocusButton = view.findViewById(R.id.muse_no_focus_btn);
         noFocusButton.setOnClickListener(new View.OnClickListener() {
@@ -263,7 +285,6 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                         return bender.getName();
                     }
                 }
-
         ));
         // Populate the spinner with the array
         ArrayAdapter<String> adapterSphero = new ArrayAdapter<>(getContext(),

@@ -109,8 +109,6 @@ public class SpheroManager implements RobotChangedStateListener, ResponseListene
                 robot.addResponseListener(this);
                 mBatteryCheckTimers.put(robot, scheduleSpheroBatteryCheckTimer(robot));
                 notifyRobotSetListeners();
-                blink(new ConvenienceRobot(robot),true);
-                showTail(new ConvenienceRobot(robot));
 
                 Log.d(TAG, "Robot " + robotName + " is now online. Address: " + robot.getAddress());
                 break;
@@ -147,9 +145,7 @@ public class SpheroManager implements RobotChangedStateListener, ResponseListene
         } else {
             convenienceRobot.setLed( 0.0f, 0.0f, 1.0f );
         }
-
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             public void run() {
                 blink(convenienceRobot, !lit);
             }
@@ -158,9 +154,8 @@ public class SpheroManager implements RobotChangedStateListener, ResponseListene
 
     private void showTail(@NonNull final ConvenienceRobot robot)
     {
-        robot.setBackLedBrightness(1.0f);
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        robot.calibrating(true);
+        new Handler().postDelayed(new Runnable() {
             public void run() {
                 robot.calibrating(false);
             }
