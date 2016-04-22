@@ -175,29 +175,30 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/calibrate_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_add" />
+                android:id="@+id/sphero_calibrate_btn"
+                android:layout_width="@dimen/control_button_size"
+                android:layout_height="@dimen/control_button_size"
+                android:src="@drawable/ic_calibration_black_24dp" />
 
             <ImageButton
-                android:id="@+id/reset_horizon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_rotate" />
+                android:id="@+id/sphero_panic_btn"
+                android:layout_width="@dimen/control_button_size"
+                android:layout_height="@dimen/control_button_size"
+                android:src="@drawable/ic_cancel_black_24dp" />
 
             <ImageButton
-                android:id="@+id/no_focus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/muse_reset_horizon_btn"
+                android:layout_width="@dimen/control_button_size"
+                android:layout_height="@dimen/control_button_size"
+                android:src="@drawable/ic_balance_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/muse_no_focus_btn"
+                android:layout_width="@dimen/control_button_size"
+                android:layout_height="@dimen/control_button_size"
                 android:baselineAlignBottom="false"
-                android:src="@android:drawable/ic_dialog_alert" />
+                android:src="@drawable/ic_warning_black_24dp" />
 
-            <ImageButton
-                android:id="@+id/muse_panic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_delete" />
         </LinearLayout>
 
     </LinearLayout>
