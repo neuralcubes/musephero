@@ -185,12 +185,12 @@
                 android:layout_width="@dimen/control_button_size"
                 android:layout_height="@dimen/control_button_size"
                 android:src="@drawable/ic_right_30_black_24dp" />
-
-            <ImageButton
+            <ToggleButton
                 android:id="@+id/sphero_panic_btn"
                 android:layout_width="@dimen/control_button_size"
                 android:layout_height="@dimen/control_button_size"
-                android:src="@drawable/ic_cancel_black_24dp" />
+                android:textOff="X"
+                android:textOn="X"/>
 
             <ImageButton
                 android:id="@+id/muse_reset_horizon_btn"

@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -91,16 +90,6 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             }
         });
 
-        View panicButton = view.findViewById(R.id.sphero_panic_btn);
-        panicButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mSphero.isPresent()) {
-                    mSphero.get().stop();
-                }
-            }
-        });
-
         final View calibrateRightButton = view.findViewById(R.id.sphero_calibrate_right_btn);
         final View calibrateLeftButton = view.findViewById(R.id.sphero_calibrate_left_btn);
         View.OnClickListener calibrateClickListener = new View.OnClickListener() {
@@ -127,7 +116,6 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         calibrateLeftButton.setOnClickListener(calibrateClickListener);
         calibrateRightButton.setOnClickListener(calibrateClickListener);
 
-
         View horizonButton = view.findViewById(R.id.muse_reset_horizon_btn);
         horizonButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,21 +128,43 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 }
             }
         });
-        ToggleButton toggleButton = (ToggleButton) view.findViewById(R.id.toggle_override);
-        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+        final CompoundButton panicButton = (CompoundButton)view.findViewById(R.id.sphero_panic_btn);
+        final CompoundButton overrideButton = (CompoundButton) view.findViewById(R.id.toggle_override);
+        final SeekBar seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
+        //The relationship between the panic, override and the seekbar is as follows:
+        // 1, The panic button makes sure that if it's checked the override value is always 0
+        // 2, The override is checked and the panic is not the
+        //  override value is whatever is set in the bar
+        // 3. The seekbar updates the override value only if the panic is not set
+        panicButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mController.isPresent()) {
-                    mController.get().setOverrideFocus(isChecked);
+                if(isChecked && mSphero.isPresent()){
+                    mSphero.get().stop();
+                }
+                if(mController.isPresent()){
+                    mController.get().setOverrideFocus(isChecked || overrideButton.isChecked());
+                    mController.get().setOverrideValue(0);
+                    seekBar.setProgress(0);
                 }
             }
         });
-        SeekBar seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
+
+        overrideButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(mController.isPresent()){
+                    mController.get().setOverrideFocus(isChecked || panicButton.isChecked());
+                }
+            }
+        });
+
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (mController.isPresent()) {
-                    mController.get().setOverrideValue(((double) progress) / seekBar.getMax());
+                if(mController.isPresent() && !panicButton.isChecked()){
+                    mController.get().setOverrideValue(((double) progress)/seekBar.getMax());
                 }
             }
 
@@ -170,7 +180,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         });
 
         mSpheroActions = new View[]{calibrateLeftButton, calibrateRightButton, panicButton};
-        mMuseActions = new View[]{toggleButton, horizonButton};
+        mMuseActions = new View[]{overrideButton, horizonButton};
 
         mConcentrationBar = view.findViewById(R.id.concentrationBar);
         mConcentrationBar.setOnClickListener(new View.OnClickListener() {
