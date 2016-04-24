@@ -322,11 +322,20 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                TextView batteryText = (TextView) getView().findViewById(R.id.battery_muse);
-                batteryText.setText(String.format("%.2f%%", reading.getLevel()));
-                //be careful when the reading is less that 0.25
-                if (reading.getLevel() < 0.25) {
+                final float batteryLevel = (float) reading.getLevel();
+                final TextView batteryText = (TextView) getView().findViewById(R.id.battery_muse);
+                final ImageView batteryImage = (ImageView) getView().findViewById(R.id.ic_battery_muse);
+                batteryText.setText(String.format("%.2f%%", batteryLevel));
+                if (batteryLevel >= 0.8) {
+                    batteryImage.setImageResource(R.drawable.ic_battery_80_black_24dp);
+                } else if (batteryLevel >= 0.5) {
+                    batteryImage.setImageResource(R.drawable.ic_battery_50_black_24dp);
+                } else if (batteryLevel >= 0.2) {
+                    batteryImage.setImageResource(R.drawable.ic_battery_20_black_24dp);
+                } else {
+                    //be careful when the reading is less that 0.25
                     batteryText.setBackgroundColor(Color.RED);
+                    batteryImage.setImageResource(R.drawable.ic_battery_alert_black_24dp);
                 }
             }
         });
