@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:keepScreenOn="true" >
 
     <fragment android:name="uk.co.neuralcubes.neuralates.ControlFragment"
         android:id="@+id/control1"
@@ -11,4 +12,4 @@
         android:layout_height="fill_parent"
         tools:layout="@layout/fragment_control" />
 
-</LinearLayout>
+</FrameLayout>
