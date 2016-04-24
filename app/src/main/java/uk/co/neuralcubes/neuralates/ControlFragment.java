@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.percent.PercentLayoutHelper;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -343,7 +342,6 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             public void run() {
                 float concentration = (float) reading.getFocus();
                 int[] border = mColorMap.map(0.3);
-                Log.d("ControlFragment", "updateConcentration: " + concentration);
 
                 final View concentrationBar = getView().findViewById(R.id.concentrationBar);
                 final View concentrationBorder = getView().findViewById(R.id.concentrationBorder);
