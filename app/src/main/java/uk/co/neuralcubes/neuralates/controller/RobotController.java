@@ -23,7 +23,6 @@ public class RobotController {
     private boolean mIsCalibrating = false;
     private double mMaximumThrust = 0.1;
 
-
     public RobotController(@NonNull ConvenienceRobot robot, @NonNull EventBus bus, @NonNull ColorMap colorMap) {
         mRobot = robot;
         mBus = bus;
