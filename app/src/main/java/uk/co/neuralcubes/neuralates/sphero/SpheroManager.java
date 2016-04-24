@@ -80,7 +80,7 @@ public class SpheroManager implements RobotChangedStateListener, ResponseListene
 
     public synchronized void addRobotSetListener(SpheroEventListener listener)
     {
-        this.mEventListeners.add(listener);
+        mEventListeners.add(listener);
     }
 
     public void notifyRobotSetListeners()
