@@ -137,7 +137,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
 
         final CompoundButton panicButton = (CompoundButton)view.findViewById(R.id.sphero_panic_btn);
         final CompoundButton overrideButton = (CompoundButton) view.findViewById(R.id.toggle_override);
-        final SeekBar seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
+        final SeekBar overrideSeekBar = (SeekBar) view.findViewById(R.id.override_seek_bar);
         //The relationship between the panic, override and the seekbar is as follows:
         // 1, The panic button makes sure that if it's checked the override value is always 0
         // 2, The override is checked and the panic is not the
@@ -152,7 +152,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 if(mController.isPresent()){
                     mController.get().setOverrideFocus(isChecked || overrideButton.isChecked());
                     mController.get().setOverrideValue(0);
-                    seekBar.setProgress(0);
+                    overrideSeekBar.setProgress(0);
                 }
             }
         });
@@ -166,11 +166,31 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             }
         });
 
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        overrideSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if(mController.isPresent() && !panicButton.isChecked()){
                     mController.get().setOverrideValue(((double) progress)/seekBar.getMax());
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        final SeekBar thrustSeekBar = (SeekBar) view.findViewById(R.id.thrust_seek_bar);
+        thrustSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(mController.isPresent()){
+                    mController.get().setMaximumTrust(((double)progress)/seekBar.getMax());
                 }
             }
 

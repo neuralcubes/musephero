@@ -18,4 +18,5 @@
     <string name="muse_disconnected">Disconnected</string>
     <string name="ellipsis">…</string>
     <string name="override">Override</string>
+    <string name="max_thrust">Max Thrust</string>
 </resources>
