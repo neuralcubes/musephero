@@ -1,5 +1,7 @@
 package uk.co.neuralcubes.neuralates;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,13 +9,20 @@ import android.support.annotation.NonNull;
 import android.support.percent.PercentLayoutHelper;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -39,6 +48,8 @@ import uk.co.neuralcubes.neuralates.controller.ColorMap;
 import uk.co.neuralcubes.neuralates.controller.RobotController;
 import uk.co.neuralcubes.neuralates.muse.MuseHandler;
 import uk.co.neuralcubes.neuralates.muse.PairedMuse;
+import uk.co.neuralcubes.neuralates.scores.PlayerScore;
+import uk.co.neuralcubes.neuralates.scores.ScoreKeeperOpenHelper;
 import uk.co.neuralcubes.neuralates.sphero.SpheroEventListener;
 import uk.co.neuralcubes.neuralates.sphero.SpheroManager;
 
@@ -56,8 +67,10 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
     private View[] mMuseActions;
     private Handler mStopCalibrationHandler;
     private ColorMap mColorMap;
-    private float mAccumulatedFocus;
-    private int mAccumulatedStart, mAccumulatedStop;
+    private Optional<PlayerScore> mPlayerScore = Optional.absent();
+    private EditText mPlayerNameInput;
+    private ImageButton mSavePlayer;
+    private TextView mAccumulatedScore;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -138,7 +151,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             }
         });
 
-        final CompoundButton panicButton = (CompoundButton)view.findViewById(R.id.sphero_panic_btn);
+        final CompoundButton panicButton = (CompoundButton) view.findViewById(R.id.sphero_panic_btn);
         final CompoundButton overrideButton = (CompoundButton) view.findViewById(R.id.toggle_override);
         final SeekBar overrideSeekBar = (SeekBar) view.findViewById(R.id.override_seek_bar);
         //The relationship between the panic, override and the seekbar is as follows:
@@ -149,7 +162,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         panicButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked && mSphero.isPresent()){
+                if (isChecked && mSphero.isPresent()) {
                     mSphero.get().stop();
                 }
                 if(mController.isPresent()) {
@@ -161,7 +174,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         overrideButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(mController.isPresent()){
+                if (mController.isPresent()) {
                     mController.get().setOverrideFocus(isChecked || panicButton.isChecked());
                 }
             }
@@ -170,8 +183,8 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         overrideSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(mController.isPresent() && !panicButton.isChecked()){
-                    mController.get().setOverrideValue(((double) progress)/seekBar.getMax());
+                if (mController.isPresent() && !panicButton.isChecked()) {
+                    mController.get().setOverrideValue(((double) progress) / seekBar.getMax());
                 }
             }
 
@@ -190,8 +203,8 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         thrustSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(mController.isPresent()){
-                    mController.get().setMaximumTrust(((double)progress)/seekBar.getMax());
+                if (mController.isPresent()) {
+                    mController.get().setMaximumTrust(((double) progress) / seekBar.getMax());
                 }
             }
 
@@ -217,9 +230,48 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             }
         });
 
-        mAccumulatedFocus = 0;
-        mAccumulatedStart = 0;
-        mAccumulatedStop = 0;
+        mPlayerNameInput = (EditText) view.findViewById(R.id.playerName);
+        mPlayerNameInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    String name = v.getText().toString();
+                    if (mPlayerScore.isPresent()) {
+                        mPlayerScore.get().setName(name);
+                        mPlayerScore.get().setStart(System.currentTimeMillis() / 1000L);
+                    }
+                    mSavePlayer.setEnabled(true);
+                    mPlayerNameInput.clearFocus();
+                    //return true;//Do not consume and let the system hide editor
+                }
+                return false;
+            }
+        });
+
+        mSavePlayer = (ImageButton) view.findViewById(R.id.savePlayer);
+        mSavePlayer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mPlayerScore.isPresent()) {
+                    mPlayerScore.get().setStop(System.currentTimeMillis() / 1000L);
+                    ScoreKeeperOpenHelper helper = new ScoreKeeperOpenHelper(getActivity().getApplicationContext());
+                    SQLiteDatabase db = helper.getWritableDatabase();
+                    ContentValues values = new ContentValues();
+                    values.put(ScoreKeeperOpenHelper.ScoreEntry.COLUMN_NAME_ENTRY_ID, mPlayerScore.get().getName());
+                    values.put(ScoreKeeperOpenHelper.ScoreEntry.COLUMN_NAME_ACCUMULATED, mPlayerScore.get().getScore());
+                    values.put(ScoreKeeperOpenHelper.ScoreEntry.COLUMN_NAME_TIMESTAMP, mPlayerScore.get().getStart());
+                    values.put(ScoreKeeperOpenHelper.ScoreEntry.COLUMN_NAME_DURATION, mPlayerScore.get().getStop() - mPlayerScore.get().getStart());
+                    long id = db.insert(ScoreKeeperOpenHelper.ScoreEntry.TABLE_NAME, null, values);
+                }
+                mPlayerScore = Optional.of(new PlayerScore());
+                mPlayerNameInput.setText("");
+                v.setEnabled(false);
+            }
+        });
+        mSavePlayer.setEnabled(false);
+        mPlayerScore = Optional.of(new PlayerScore());
+
+        mAccumulatedScore = (TextView) view.findViewById(R.id.accumulatedScore);
 
         return view;
     }
@@ -389,8 +441,18 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 final PercentRelativeLayout.LayoutParams params = (PercentRelativeLayout.LayoutParams) concentrationBar.getLayoutParams();
                 params.getPercentLayoutInfo().heightPercent = concentration;
                 concentrationBar.requestLayout();
+
+                double score = 0;
+                if (mPlayerScore.isPresent()) {
+                    mPlayerScore.get().addScore(reading.getFocus());
+                    score = mPlayerScore.get().getScore();
+                }
+                mAccumulatedScore.setText(String.format("%.3f", score));
             }
         });
+        if (mPlayerScore.isPresent()) {
+            mPlayerScore.get().addScore(reading.getFocus());
+        }
     }
 
     @Override
@@ -418,20 +480,4 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         }
     }
 
-    private void startAccumulated() {
-        this.clearScore();
-        Calendar c = Calendar.getInstance();
-        mAccumulatedStart = c.get(Calendar.SECOND);
-    }
-
-    private void clearScore() {
-        mAccumulatedFocus = 0;
-        mAccumulatedStop = 0;
-        mAccumulatedStart= 0;
-    }
-
-    private void stopAccumulated() {
-        Calendar c = Calendar.getInstance();
-        mAccumulatedStop = c.get(Calendar.SECOND);
-    }
 }
