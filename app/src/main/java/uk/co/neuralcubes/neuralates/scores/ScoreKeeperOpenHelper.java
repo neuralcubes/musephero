@@ -26,8 +26,8 @@ public class ScoreKeeperOpenHelper extends SQLiteOpenHelper {
             ScoreEntry.COLUMN_NAME_ENTRY_ID + " TEXT, " +
             ScoreEntry.COLUMN_NAME_SCORE + " FLOAT, " +
             ScoreEntry.COLUMN_NAME_ACCUMULATED + " FLOAT, " +
-            ScoreEntry.COLUMN_NAME_DURATION + " FLOAT, " +
-            ScoreEntry.COLUMN_NAME_TIMESTAMP + " DATE " +
+            ScoreEntry.COLUMN_NAME_DURATION + " INTEGER, " +
+            ScoreEntry.COLUMN_NAME_TIMESTAMP + " INTEGER " +
             ")";
 
     public ScoreKeeperOpenHelper(Context context) {
