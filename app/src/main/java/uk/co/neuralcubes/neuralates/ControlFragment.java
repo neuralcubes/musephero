@@ -109,7 +109,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                         public void run() {
                             robot.calibrating(false);
                             if (mController.isPresent()) {
-                                mController.get().setCalibrating(true);
+                                mController.get().setCalibrating(false);
                             }
                         }
                     }, 3000);
