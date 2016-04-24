@@ -19,4 +19,5 @@
     <string name="ellipsis">…</string>
     <string name="override">Override</string>
     <string name="max_thrust">Max Thrust</string>
+    <string name="player_name">Player Name</string>
 </resources>
