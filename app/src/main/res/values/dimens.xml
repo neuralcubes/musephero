@@ -10,4 +10,5 @@
     <dimen name="vertical_margin">20dip</dimen>
     <dimen name="battery_text_size">14sp</dimen>
     <dimen name="control_button_size">64dp</dimen>
+    <dimen name="score_text_size">60dp</dimen>
 </resources>
