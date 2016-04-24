@@ -150,10 +150,8 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 if(isChecked && mSphero.isPresent()){
                     mSphero.get().stop();
                 }
-                if(mController.isPresent()){
-                    mController.get().setOverrideFocus(isChecked || overrideButton.isChecked());
-                    mController.get().setOverrideValue(0);
-                    overrideSeekBar.setProgress(0);
+                if(mController.isPresent()) {
+                    mController.get().setPanicModeEnabled(isChecked);
                 }
             }
         });
