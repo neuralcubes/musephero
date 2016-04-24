@@ -21,7 +21,7 @@ public class RobotController {
     private double mConcentration = 0.;
     private boolean mOverrideFocus = false;
     private double mOverrideValue = 0.;
-
+    private boolean mIsCalibrating = false;
 
     public RobotController(@NonNull ConvenienceRobot robot, @NonNull EventBus bus, @NonNull ColorMap colorMap) {
         mRobot = robot;
@@ -36,9 +36,12 @@ public class RobotController {
 
     @Subscribe
     public synchronized void updateAccelerometer(MuseHandler.AccelerometerReading reading) {
-        double thrust = mOverrideFocus? mOverrideValue:mConcentration;
-        if (thrust>1.){
-            thrust=1.;
+        if (isCalibrating()) {
+            return;
+        }
+        double thrust = mOverrideFocus? mOverrideValue : mConcentration;
+        if (thrust > 1){
+            thrust = 1f;
         }
         int []color = mColorMap.map(thrust);
         mRobot.setLed(color[0]/255.f, color[1]/255.f, color[2]/255.f);
@@ -83,5 +86,13 @@ public class RobotController {
 
     public void setOverrideValue(double overrideValue) {
         this.mOverrideValue = overrideValue;
+    }
+
+    public void setCalibrating(boolean isCalibrating) {
+        mIsCalibrating = isCalibrating;
+    }
+
+    public boolean isCalibrating() {
+        return mIsCalibrating;
     }
 }
