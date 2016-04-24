@@ -1,9 +1,21 @@
 package uk.co.neuralcubes.neuralates.controller;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by javi on 19/04/16.
  */
 public class ColorMap {
+
+    /*
+     * I got these values from http://colorbrewer2.org/
+     * and I assume that the gradients are linear, although they
+     * are not strictly linear
+     */
+    public static final ColorMap GREENISH = new ColorMap(new int[]{247,252,245}, new int[]{0,68,27});
+    public static final ColorMap REDISH = new ColorMap(new int[]{255,245,240}, new int[]{103,0,13});
+    public static final ColorMap BLUEISH = new ColorMap(new int[]{247,251,255}, new int[]{8,48,107});
+
     int mMaxRGB[];
     int mMinRGB[];
 
@@ -30,7 +42,7 @@ public class ColorMap {
      * @param value
      * @return the rgb colour
      */
-    public int[] iMap(double value) {
+    public int[] inverseMap(double value) {
         return this.map(1 - value);
     }
 
@@ -39,20 +51,14 @@ public class ColorMap {
         return (int)(value*(max-min)+min);
     }
 
-    /*
-     * I got this values from http://colorbrewer2.org/
-     * and I assume that the gradients are linear, although they
-     * are not strictly linear
-     */
-    public static ColorMap Purpleish() {
-        return new ColorMap(new int[]{252,251,253}, new int[]{63,0,125});
+    public static ColorMap next(@NonNull ColorMap map){
+        if(map == GREENISH){
+            return REDISH;
+        }
+        if (map== REDISH){
+            return BLUEISH;
+        }
+        return GREENISH;
     }
 
-    public static ColorMap Greenish() {
-        return new ColorMap(new int[]{247,252,245}, new int[]{0,68,27});
-    }
-
-    public static ColorMap Blueish() {
-        return new ColorMap(new int[]{247,251,255}, new int[]{8,48,107});
-    }
 }
