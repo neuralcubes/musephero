@@ -4,7 +4,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.percent.PercentLayoutHelper;
+import android.support.percent.PercentRelativeLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +55,6 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
     private View[] mSpheroActions;
     private View[] mMuseActions;
     private Handler mStopCalibrationHandler;
-    private View mConcentrationBar;
     private ColorMap mColorMap = ColorMap.GREENISH;
 
 
@@ -188,8 +190,8 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
         mSpheroActions = new View[]{calibrateLeftButton, calibrateRightButton, panicButton};
         mMuseActions = new View[]{overrideButton, horizonButton};
 
-        mConcentrationBar = view.findViewById(R.id.concentrationBar);
-        mConcentrationBar.setOnClickListener(new View.OnClickListener() {
+        final View concentrationBorder = view.findViewById(R.id.concentrationBorder);
+        concentrationBorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 changeColorMap();
@@ -336,22 +338,22 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
 
     @Subscribe
     public void updateConcentration(final MuseHandler.FocusReading reading) {
-
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                updateConcentrationColor(reading.getFocus());
+                float concentration = (float) reading.getFocus();
+                int[] border = mColorMap.map(0.3);
+                Log.d("ControlFragment", "updateConcentration: " + concentration);
+
+                final View concentrationBar = getView().findViewById(R.id.concentrationBar);
+                final View concentrationBorder = getView().findViewById(R.id.concentrationBorder);
+                concentrationBorder.setBackgroundColor(Color.rgb(border[0], border[1], border[2]));
+
+                final PercentRelativeLayout.LayoutParams params = (PercentRelativeLayout.LayoutParams) concentrationBar.getLayoutParams();
+                params.getPercentLayoutInfo().heightPercent = concentration;
+                concentrationBar.requestLayout();
             }
         });
-    }
-
-    void updateConcentrationColor(double value) {
-        int[] border = mColorMap.map(0.3);
-        int[] rgbColor = mColorMap.inverseMap(value);
-
-        mConcentrationBar.setBackgroundColor(Color.rgb(rgbColor[0], rgbColor[1], rgbColor[2]));
-        ((View) mConcentrationBar.getParent()).setBackgroundColor(Color.rgb(border[0], border[1], border[2]));
-        mConcentrationBar.invalidate();
     }
 
     @Override
