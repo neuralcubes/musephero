@@ -215,9 +215,27 @@
             <SeekBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/seek_bar"
+                android:id="@+id/override_seek_bar"
                 android:layout_weight="1" />
         </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/max_thrust"
+                android:id="@+id/maxThrestTExxt"
+                android:layout_weight="0.07" />
+
+            <SeekBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/thrust_seek_bar"
+                android:layout_weight="0.89" />
+            </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"

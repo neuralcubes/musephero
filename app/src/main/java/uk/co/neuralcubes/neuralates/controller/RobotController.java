@@ -17,11 +17,12 @@ public class RobotController {
     final private EventBus mBus;
     private ColorMap mColorMap;
 
-    private static final double MAX_THRUST = 0.1; //valid values from 0 to 1
     private double mConcentration = 0.;
     private boolean mOverrideFocus = false;
     private double mOverrideValue = 0.;
     private boolean mIsCalibrating = false;
+    private double mMaximumThrust = 0.1;
+
 
     public RobotController(@NonNull ConvenienceRobot robot, @NonNull EventBus bus, @NonNull ColorMap colorMap) {
         mRobot = robot;
@@ -45,7 +46,7 @@ public class RobotController {
         }
         int []color = mColorMap.map(thrust);
         mRobot.setLed(color[0]/255.f, color[1]/255.f, color[2]/255.f);
-        mRobot.drive(computeAngle(reading.getX(), reading.getY()), (float) (MAX_THRUST *thrust));
+        mRobot.drive(computeAngle(reading.getX(), reading.getY()), (float) (mMaximumThrust *thrust));
     }
 
     @Subscribe
@@ -85,7 +86,11 @@ public class RobotController {
     }
 
     public void setOverrideValue(double overrideValue) {
-        this.mOverrideValue = overrideValue;
+        mOverrideValue = overrideValue;
+    }
+
+    public void setMaximumTrust(double maximumTrust) {
+        mMaximumThrust = maximumTrust;
     }
 
     public void setCalibrating(boolean isCalibrating) {
