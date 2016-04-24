@@ -21,6 +21,7 @@ public class RobotController {
     private boolean mOverrideFocus = false;
     private double mOverrideValue = 0.;
     private boolean mIsCalibrating = false;
+    private boolean mPanicModeEnabled = false;
     private double mMaximumThrust = 0.1;
 
     public RobotController(@NonNull ConvenienceRobot robot, @NonNull EventBus bus, @NonNull ColorMap colorMap) {
@@ -36,7 +37,7 @@ public class RobotController {
 
     @Subscribe
     public synchronized void updateAccelerometer(MuseHandler.AccelerometerReading reading) {
-        if (isCalibrating()) {
+        if (isCalibrating() || isPanicModeEnabled()) {
             return;
         }
         double thrust = mOverrideFocus? mOverrideValue : mConcentration;
@@ -98,5 +99,13 @@ public class RobotController {
 
     public boolean isCalibrating() {
         return mIsCalibrating;
+    }
+
+    public void setPanicModeEnabled(boolean enablePanicMode) {
+        mPanicModeEnabled = enablePanicMode;
+    }
+
+    public boolean isPanicModeEnabled() {
+        return mPanicModeEnabled;
     }
 }
