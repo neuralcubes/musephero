@@ -66,7 +66,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
     private View[] mSpheroActions;
     private View[] mMuseActions;
     private Handler mStopCalibrationHandler;
-    private ColorMap mColorMap;
+    private ColorMap mColorMap = ColorMap.GREENISH;
     private Optional<PlayerScore> mPlayerScore = Optional.absent();
     private EditText mPlayerNameInput;
     private ImageButton mSavePlayer;
