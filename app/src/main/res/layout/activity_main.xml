@@ -7,8 +7,7 @@
 
     <fragment android:name="uk.co.neuralcubes.neuralates.ControlFragment"
         android:id="@+id/control1"
-        android:layout_weight="1"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_control" />
 
