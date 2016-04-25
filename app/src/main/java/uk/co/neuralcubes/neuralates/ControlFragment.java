@@ -284,7 +284,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
             return;
         }
 
-        batteryText.setText(powerState.name());
+        int textColor = Color.BLACK;
         switch (powerState) {
             case OK:
                 batteryIcon.setImageResource(R.drawable.ic_battery_80_black_24dp);
@@ -293,7 +293,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 batteryIcon.setImageResource(R.drawable.ic_battery_20_black_24dp);
                 break;
             case CRITICAL:
-                batteryText.setTextColor(Color.RED);
+                textColor = Color.RED;
                 batteryIcon.setImageResource(R.drawable.ic_battery_alert_black_24dp);
                 break;
             case CHARGING:
@@ -303,6 +303,8 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 batteryIcon.setImageResource(R.drawable.ic_battery_unknown_black_24dp);
                 break;
         }
+        batteryText.setText(powerState.name());
+        batteryText.setTextColor(textColor);
     }
 
     @Subscribe
@@ -324,7 +326,8 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 final float batteryLevel = (float) reading.getLevel();
                 final TextView batteryText = (TextView) getView().findViewById(R.id.battery_muse);
                 final ImageView batteryImage = (ImageView) getView().findViewById(R.id.ic_battery_muse);
-                batteryText.setText(String.format("%.2f%%", batteryLevel));
+                
+                int textColor = Color.BLACK;
                 if (batteryLevel >= 80) {
                     batteryImage.setImageResource(R.drawable.ic_battery_80_black_24dp);
                 } else if (batteryLevel >= 50) {
@@ -333,9 +336,11 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                     batteryImage.setImageResource(R.drawable.ic_battery_20_black_24dp);
                 } else {
                     //be careful when the reading is less that 0.25
-                    batteryText.setTextColor(Color.RED);
+                    textColor = Color.RED;
                     batteryImage.setImageResource(R.drawable.ic_battery_alert_black_24dp);
                 }
+                batteryText.setTextColor(textColor);
+                batteryText.setText(String.format("%.2f%%", batteryLevel));
             }
         });
     }
