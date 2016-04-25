@@ -293,6 +293,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 batteryIcon.setImageResource(R.drawable.ic_battery_20_black_24dp);
                 break;
             case CRITICAL:
+                batteryText.setTextColor(Color.RED);
                 batteryIcon.setImageResource(R.drawable.ic_battery_alert_black_24dp);
                 break;
             case CHARGING:
@@ -324,15 +325,15 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 final TextView batteryText = (TextView) getView().findViewById(R.id.battery_muse);
                 final ImageView batteryImage = (ImageView) getView().findViewById(R.id.ic_battery_muse);
                 batteryText.setText(String.format("%.2f%%", batteryLevel));
-                if (batteryLevel >= 0.8) {
+                if (batteryLevel >= 80) {
                     batteryImage.setImageResource(R.drawable.ic_battery_80_black_24dp);
-                } else if (batteryLevel >= 0.5) {
+                } else if (batteryLevel >= 50) {
                     batteryImage.setImageResource(R.drawable.ic_battery_50_black_24dp);
-                } else if (batteryLevel >= 0.2) {
+                } else if (batteryLevel >= 20) {
                     batteryImage.setImageResource(R.drawable.ic_battery_20_black_24dp);
                 } else {
                     //be careful when the reading is less that 0.25
-                    batteryText.setBackgroundColor(Color.RED);
+                    batteryText.setTextColor(Color.RED);
                     batteryImage.setImageResource(R.drawable.ic_battery_alert_black_24dp);
                 }
             }
@@ -384,7 +385,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
     @Override
     public void updateRobots(final List<Robot> robots) {
         List<String> tmpArraySphero = Lists.newArrayList();
-        tmpArraySphero.add(getResources().getString(R.string.sphero_selector_header));
+        tmpArraySphero.add(getString(R.string.sphero_selector_header));
         tmpArraySphero.addAll(Collections2.transform(robots,
                 new Function<Robot, String>() {
                     @Override
