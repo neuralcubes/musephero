@@ -23,6 +23,8 @@ public class RobotController {
     private boolean mIsCalibrating = false;
     private boolean mPanicModeEnabled = false;
     private double mMaximumThrust = 0.1;
+    private MuseHandler.AccelerometerReading mLastAcceleromterReading = MuseHandler.AccelerometerReading.ZERO;
+    private MuseHandler.AccelerometerReading mBaseAcceleromterReading = MuseHandler.AccelerometerReading.ZERO;
 
     public RobotController(@NonNull ConvenienceRobot robot, @NonNull EventBus bus, @NonNull ColorMap colorMap) {
         mRobot = robot;
@@ -37,6 +39,7 @@ public class RobotController {
 
     @Subscribe
     public synchronized void updateAccelerometer(MuseHandler.AccelerometerReading reading) {
+        mLastAcceleromterReading = reading;
         if (isCalibrating() || isPanicModeEnabled()) {
             return;
         }
@@ -46,7 +49,9 @@ public class RobotController {
         }
         int []color = mColorMap.map(thrust);
         mRobot.setLed(color[0]/255.f, color[1]/255.f, color[2]/255.f);
-        mRobot.drive(computeAngle(reading.getX(), reading.getY()), (float) (mMaximumThrust *thrust));
+        final double x = reading.getX() - mBaseAcceleromterReading.getX();
+        final double y = reading.getY() - mBaseAcceleromterReading.getY();
+        mRobot.drive(computeAngle(x, y), (float) (mMaximumThrust * thrust));
     }
 
     @Subscribe
@@ -77,12 +82,12 @@ public class RobotController {
         return (float)( (theta * 180 / Math.PI) % 360);
     }
 
-    public synchronized void setOverrideFocus(boolean overrideFocus) {
+    public void setOverrideFocus(boolean overrideFocus) {
         mOverrideFocus = overrideFocus;
     }
 
-    public synchronized void setBaseReading() {
-        //TODO jmanart assign the latest read.
+    public void setBaseReading() {
+        mBaseAcceleromterReading = mLastAcceleromterReading;
     }
 
     public void setOverrideValue(double overrideValue) {
