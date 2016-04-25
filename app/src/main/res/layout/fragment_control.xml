@@ -1,8 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="10dp"
     tools:context="uk.co.neuralcubes.neuralates.ControlFragment">
 
@@ -44,8 +44,8 @@
                     android:id="@+id/battery_sphero"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/battery_text_size"
-                    android:text="@string/ellipsis" />
+                    android:text="@string/ellipsis"
+                    android:textSize="@dimen/battery_text_size" />
             </LinearLayout>
 
         </LinearLayout>
@@ -94,9 +94,9 @@
                     android:id="@+id/battery_muse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/ellipsis"
                     android:textAlignment="center"
-                    android:textSize="@dimen/battery_text_size"
-                    android:text="@string/ellipsis" />
+                    android:textSize="@dimen/battery_text_size" />
             </LinearLayout>
 
         </LinearLayout>
@@ -186,12 +186,13 @@
                 android:layout_width="@dimen/control_button_size"
                 android:layout_height="@dimen/control_button_size"
                 android:src="@drawable/ic_right_30_black_24dp" />
+
             <ToggleButton
                 android:id="@+id/sphero_panic_btn"
                 android:layout_width="@dimen/control_button_size"
                 android:layout_height="@dimen/control_button_size"
                 android:textOff="X"
-                android:textOn="X"/>
+                android:textOn="X" />
 
             <ImageButton
                 android:id="@+id/muse_reset_horizon_btn"
@@ -202,64 +203,111 @@
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <ToggleButton
+                android:id="@+id/toggle_override"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textOn="@string/override"
                 android:textOff="@string/override"
-                android:id="@+id/toggle_override" />
+                android:textOn="@string/override" />
 
             <SeekBar
+                android:id="@+id/override_seek_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/override_seek_bar"
                 android:layout_weight="1" />
         </LinearLayout>
+
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/maxThrestTExxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/max_thrust"
-                android:id="@+id/maxThrestTExxt"
-                android:layout_weight="0.07" />
+                android:layout_weight="0.07"
+                android:text="@string/max_thrust" />
 
             <SeekBar
+                android:id="@+id/thrust_seek_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/thrust_seek_bar"
                 android:layout_weight="0.89" />
-            </LinearLayout>
+        </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="right">
+            android:gravity="right"
+            android:orientation="horizontal">
 
-            <android.support.percent.PercentRelativeLayout
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="20dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/accumulatedScore"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/score_text_size"
+                    android:layout_weight="1" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:gravity="center_vertical"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left|center_vertical"
+                        android:text="@string/player_name" />
+
+                    <EditText
+                        android:id="@+id/playerName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|fill_vertical"
+                        android:layout_weight="1.00"
+                        android:singleLine="true" />
+
+
+                    <ImageButton
+                        android:id="@+id/savePlayer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_save_black_24dp" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+            <android.support.percent.PercentRelativeLayout
                 android:id="@+id/concentrationBorder"
-                android:gravity="bottom">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:gravity="bottom"
+                android:padding="20dp">
 
                 <View
                     android:id="@+id/concentrationBar"
                     android:background="@android:color/white"
-                    app:layout_widthPercent="100%"
-                    app:layout_heightPercent="0%" />
+                    app:layout_heightPercent="0%"
+                    app:layout_widthPercent="100%" />
 
             </android.support.percent.PercentRelativeLayout>
         </LinearLayout>
-
     </LinearLayout>
 
 </FrameLayout>
