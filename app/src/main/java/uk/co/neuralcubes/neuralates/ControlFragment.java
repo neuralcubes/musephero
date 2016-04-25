@@ -8,8 +8,6 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +16,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -39,7 +36,6 @@ import com.orbotix.command.GetPowerStateResponse;
 import com.orbotix.common.Robot;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
@@ -304,6 +300,10 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                     mController.get().unlink();
                 }
                 mController = Optional.of(new RobotController(mSphero.get(), mBus, mColorMap));
+                final CompoundButton panicButton = (CompoundButton) view.findViewById(R.id.sphero_panic_btn);
+                mController.get().setPanicModeEnabled(panicButton.isChecked());
+                final SeekBar thrustSeekBar = (SeekBar) view.findViewById(R.id.thrust_seek_bar);
+                mController.get().setMaximumTrust(((double) thrustSeekBar.getProgress()) / thrustSeekBar.getMax());
             }
         }
     }
