@@ -257,6 +257,7 @@
                     android:id="@+id/accumulatedScore"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:textSize="@dimen/score_text_size"
                     android:layout_weight="1" />
 
                 <LinearLayout
@@ -289,22 +290,23 @@
                         android:src="@drawable/ic_save_black_24dp" />
 
 
-                    <android.support.percent.PercentRelativeLayout
-                        android:id="@+id/concentrationBorder"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="bottom"
-                        android:padding="20dp">
-
-                        <View
-                            android:id="@+id/concentrationBar"
-                            android:background="@android:color/white"
-                            app:layout_heightPercent="0%"
-                            app:layout_widthPercent="100%" />
-
-                    </android.support.percent.PercentRelativeLayout>
                 </LinearLayout>
             </LinearLayout>
+            <android.support.percent.PercentRelativeLayout
+                android:id="@+id/concentrationBorder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:gravity="bottom"
+                android:padding="20dp">
+
+                <View
+                    android:id="@+id/concentrationBar"
+                    android:background="@android:color/white"
+                    app:layout_heightPercent="0%"
+                    app:layout_widthPercent="100%" />
+
+            </android.support.percent.PercentRelativeLayout>
         </LinearLayout>
     </LinearLayout>
 
