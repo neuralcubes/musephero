@@ -191,7 +191,8 @@
                 android:id="@+id/sphero_panic_btn"
                 android:layout_width="@dimen/control_button_size"
                 android:layout_height="@dimen/control_button_size"
-                android:drawableTop="@drawable/ic_cancel_black_24dp" />
+                android:drawableTop="@drawable/ic_cancel_black_24dp"
+                android:checked="true"/>
 
             <ImageButton
                 android:id="@+id/muse_reset_horizon_btn"
@@ -236,7 +237,9 @@
                 android:id="@+id/thrust_seek_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.89" />
+                android:layout_weight="0.89"
+                android:progress="40"
+                android:max="100"/>
         </LinearLayout>
 
         <LinearLayout
