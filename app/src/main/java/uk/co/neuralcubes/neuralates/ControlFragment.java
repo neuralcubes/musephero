@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.percent.PercentLayoutHelper;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -384,7 +383,7 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                 final float batteryLevel = (float) reading.getLevel();
                 final TextView batteryText = (TextView) getView().findViewById(R.id.battery_muse);
                 final ImageView batteryImage = (ImageView) getView().findViewById(R.id.ic_battery_muse);
-                
+
                 int textColor = Color.BLACK;
                 if (batteryLevel >= 80) {
                     batteryImage.setImageResource(R.drawable.ic_battery_80_black_24dp);

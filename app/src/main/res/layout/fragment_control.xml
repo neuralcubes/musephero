@@ -191,8 +191,7 @@
                 android:id="@+id/sphero_panic_btn"
                 android:layout_width="@dimen/control_button_size"
                 android:layout_height="@dimen/control_button_size"
-                android:textOff="X"
-                android:textOn="X" />
+                android:drawableTop="@drawable/ic_cancel_black_24dp" />
 
             <ImageButton
                 android:id="@+id/muse_reset_horizon_btn"
