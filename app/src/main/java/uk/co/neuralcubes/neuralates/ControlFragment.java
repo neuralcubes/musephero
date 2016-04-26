@@ -300,9 +300,9 @@ public class ControlFragment extends Fragment implements SpheroEventListener, Ad
                     mController.get().unlink();
                 }
                 mController = Optional.of(new RobotController(mSphero.get(), mBus, mColorMap));
-                final CompoundButton panicButton = (CompoundButton) view.findViewById(R.id.sphero_panic_btn);
+                final CompoundButton panicButton = (CompoundButton) getView().findViewById(R.id.sphero_panic_btn);
                 mController.get().setPanicModeEnabled(panicButton.isChecked());
-                final SeekBar thrustSeekBar = (SeekBar) view.findViewById(R.id.thrust_seek_bar);
+                final SeekBar thrustSeekBar = (SeekBar) getView().findViewById(R.id.thrust_seek_bar);
                 mController.get().setMaximumTrust(((double) thrustSeekBar.getProgress()) / thrustSeekBar.getMax());
             }
         }
